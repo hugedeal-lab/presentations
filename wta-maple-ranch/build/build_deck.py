@@ -1,4 +1,4 @@
-"""Build the WTA Maple Ranch deck "Stop Selling Hours" on the WTA 2026 master template.
+"""Build the WTA Maple Ranch training deck "Mastering Agency Commercials" on the WTA 2026 master template.
 
 Usage: python3 build_deck.py [output.pptx]
 
@@ -22,7 +22,7 @@ from pptx.util import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parent / "template" / "WTA-2026-MasterSlideDeck.pptx"
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parent / "WTA-Stop-Selling-Hours-Maple-Ranch.pptx"
+OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parent / "WTA-Mastering-Agency-Commercials-Maple-Ranch.pptx"
 
 # --- WTA theme palette (from the template's "WTA Colors" scheme) ---------------------
 NAVY = RGBColor(0x12, 0x2A, 0x4E)
@@ -41,7 +41,7 @@ BODY = "DM Sans 14pt"
 LIGHT = "DM Sans 14pt ExtraLight"
 SEMI = "DM Sans 14pt SemiBold"
 
-FOOTER = "WTA Commercial Operating System  |  Leadership Retreat  |  Maple Ranch"
+FOOTER = "Mastering Agency Commercials  |  WTA  |  Maple Ranch"
 
 # Template layouts used (index within the single WTA master)
 L_TITLE_SWIRL = 0      # "Custom Layout": blue-red swirl gradient
@@ -96,9 +96,14 @@ def new_slide(layout_idx, eyebrow=None, title=None, notes=None, keep=()):
         if ph.placeholder_format.type in (PH.TITLE, PH.CENTER_TITLE) and title is not None:
             ph.text_frame.text = title
             if layout_idx == L_CONTENT:
-                ph.width = Inches(12.29)
-                for r in ph.text_frame.paragraphs[0].runs:
-                    r.font.size = Pt(40)
+                # Fixed title frame: one line at 36pt, top-anchored, clear of the
+                # section label above and of the sub-head/content zone below (y >= 1.75")
+                ph.left, ph.top, ph.width, ph.height = Inches(0.52), Inches(0.88), Inches(12.29), Inches(0.72)
+                tf = ph.text_frame
+                tf.word_wrap = True
+                tf.vertical_anchor = MSO_ANCHOR.TOP
+                for r in tf.paragraphs[0].runs:
+                    r.font.size = Pt(36)
         elif idx == 36 and eyebrow is not None:
             ph.text_frame.text = eyebrow
         elif idx in keep:
@@ -236,662 +241,529 @@ def cue(minutes):
     return f"[{fmt(a)} – {fmt(_clock[0])}]  ({minutes:g} min)\n\n"
 
 
-# =====================================================================================
-# THE PROVOCATION (00:00 – 05:00)
-# =====================================================================================
-
-# 1 — Title ---------------------------------------------------------------------------
-s = new_slide(L_TITLE_SWIRL, title=None, keep=(0,), notes=cue(2) + """
-OPEN — set the stage.
-• Thank Eric and the WTA leadership team for commissioning this work. This session is the start of how WTA will create, capture and scale value in FY2027.
-• Introduce yourself briefly: 20+ years in agency finance and commercial leadership across holding-company, independent and PE-backed agencies.\n• Frame the why: this is about how WTA creates, captures and scales value, and an elevation in how the agency values its own expertise, internally and externally.
-• Audience: WTA executives and select agency leadership. This session consolidates the finance, portfolio and commercial-model foundations into one hour.
-
-THE HOOK (deliver slowly):
-"You nailed the pitch. The creative was brilliant. And then procurement spent three weeks negotiating 25% of an Associate Creative Director.
-That's not a creative problem. That's a commercial model problem."
-
-Pause. Then: "For the next 60 minutes we're going to fix the commercial model."
-""")
-t = ph(s, 0)
-t.left, t.top, t.width, t.height = Inches(0.52), Inches(1.55), Inches(9.5), Inches(2.4)
-tf = t.text_frame
-tf.text = ""
-p = tf.paragraphs[0]
-r = p.add_run(); r.text = "Stop selling "
-_style_run(r, 66, WHITE, LIGHT)
-r = p.add_run(); r.text = "hours"
-_style_run(r, 66, WHITE, SEMI, italic=True)
-text(s, 0.52, 3.85, 8.6, 0.9,
-     "The WTA Commercial Operating System: how to productize agency services and price for value",
-     size=20, color=WHITE, font=BODY, line=1.1)
-rule(s, 0.52, 5.05, 1.6, 5.05, color=WHITE, width=1)
-text(s, 0.52, 5.25, 8.6, 0.8, [
-    {"t": "Erin Jemas", "font": SEMI, "size": 16, "color": WHITE},
-    {"t": "Founder & Principal, Price It Right", "size": 14, "color": WHITE},
-], line=1.15)
-
-# 2 — Agenda --------------------------------------------------------------------------
-s = new_slide(L_PLAIN, eyebrow="AGENDA  ·  60 MINUTES", notes=cue(0.5) + """
-Quick roadmap — don't linger.
-"We'll start with why the market is breaking the hourly model, build a shared financial vocabulary with Eric's team, show you what that means for how you run your portfolio, and then introduce the new commercial model and how we roll it out."
-""")
-rows = [
-    ("01", "The Provocation", "Why pricing inputs is breaking", "00:00 – 05:00"),
-    ("02", "Agency Economics 101", "The direct margin engine", "05:00 – 20:00"),
-    ("03", "WTA in Action", "Front-line portfolio stewardship", "20:00 – 38:00"),
-    ("04", "The Commercial Operating System", "Stop selling hours", "38:00 – 55:00"),
-    ("05", "Roadmap & Q&A", "Our FY2027 commercial mandate", "55:00 – 60:00"),
-]
-y0, rh = 1.05, 1.02
-for i, (n, name, sub, when) in enumerate(rows):
-    y = y0 + i * rh
-    text(s, 0.52, y, 1.0, 0.75, n, size=36, color=RED, font=LIGHT, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, 1.55, y, 6.8, 0.75, [
-        {"t": name, "size": 26, "color": NAVY, "font": BODY},
-    ], anchor=MSO_ANCHOR.MIDDLE)
-    text(s, 7.6, y, 3.4, 0.75, sub, size=14, color=MUTED, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, 10.9, y, 1.9, 0.75, when, size=14, color=NAVY, font=SEMI, align=PP_ALIGN.RIGHT,
-         anchor=MSO_ANCHOR.MIDDLE)
-    rule(s, 0.52, y + 0.86, 12.81, y + 0.86, color=RULE)
-
-# 3 — Market forces -------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="THE PROVOCATION", title="Why time-based pricing is collapsing", notes=cue(2.5) + """
-Three pressures are colliding at the same time — none of them are going away.
-
-1. Economic scrutiny — every dollar is questioned. Clients want transparency and predictable ROI from agency partners.
-2. Procurement influence — rate cards get treated as commodities to grind down. Time is no longer a defensible pricing unit when procurement compares us line by line with every other vendor.
-3. AI & technology disruption — the time it takes to deliver brilliance is compressing.
-
-KEY LINE: "When AI and modern expertise allow your team to do in two hours what used to take twenty, selling by the hour means efficiency is financial suicide."
-
-Transition: "Today, we shift from selling labor inputs to pricing packaged impact. But first, we need a shared language for how this agency actually makes money."
-""")
-cards = [
-    ("01", "Economic scrutiny", "Clients demand total transparency and predictable ROI on every dollar."),
-    ("02", "Procurement influence", "Rate cards are treated as commodities to compare and grind down."),
-    ("03", "AI & technology disruption", "The time it takes to deliver brilliance is compressing fast."),
-]
-cw, gap = 3.93, 0.25
-for i, (n, head, body) in enumerate(cards):
-    x = 0.52 + i * (cw + gap)
-    box(s, x, 2.3, cw, 2.35, fill=GREY)
-    text(s, x + 0.3, 2.5, 1.2, 0.6, n, size=32, color=RED, font=LIGHT)
-    text(s, x + 0.3, 3.15, cw - 0.6, 0.4, head, size=18, color=NAVY, font=SEMI)
-    text(s, x + 0.3, 3.62, cw - 0.6, 0.95, body, size=14, color=TEXT, line=1.15)
-q = box(s, 0.52, 4.95, 12.29, 1.3, fill=NAVY)
-text(s, 0.95, 5.05, 11.4, 1.1, [
-    {"t": [{"t": "When your team can do in two hours what used to take twenty, "},
-           {"t": "selling by the hour makes efficiency financial suicide.", "font": SEMI, "color": WHITE}]},
-], size=20, color=WHITE, font=LIGHT, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
+# Layout grid for content slides (inches): section label 0.42, title 0.88–1.60,
+# optional sub-head 1.75–2.10, content 2.35–6.30, footer rule 6.55.
+SUB_Y = 1.75
+TOP = 2.35
 
 
-# =====================================================================================
-# PART 1 — AGENCY ECONOMICS 101 (05:00 – 20:00)
-# =====================================================================================
+def subhead(s, t):
+    text(s, 0.52, SUB_Y, 12.29, 0.35, t, size=16, color=MUTED)
+
+
 def divider(part, title, sub, notes, minutes):
     s = new_slide(L_DIVIDER, eyebrow=part, title=title, notes=cue(minutes) + notes)
     t = ph(s, 0)
-    t.left, t.top, t.width, t.height = Inches(0.47), Inches(2.45), Inches(11.5), Inches(1.5)
+    t.left, t.top, t.width, t.height = Inches(0.47), Inches(2.45), Inches(11.5), Inches(1.3)
     t.text_frame.vertical_anchor = MSO_ANCHOR.BOTTOM
     t.text_frame.word_wrap = False
     for p in t.text_frame.paragraphs:
         for r in p.runs:
             _style_run(r, 54, WHITE, LIGHT)
-    text(s, 0.49, 4.15, 8.0, 0.6, sub, size=22, color=WHITE, font=BODY)
+    text(s, 0.49, 4.0, 10.0, 0.6, sub, size=22, color=WHITE, font=BODY)
     return s
 
 
-divider("PART 1  ·  05:00 – 20:00", "Agency Economics 101", "The direct margin engine", """
-Frame Part 1: "This is the universal financial vocabulary. It's aligned with Eric's finance team, so when you talk to Finance — and when Finance talks to you — we mean exactly the same thing by every term."
-(Before Maple Ranch: Eric to review terminology on the next four slides for consistency with WTA reporting.)
+# =====================================================================================
+# PART 1 — FINANCE 101: HOW OUR AGENCY MAKES MONEY (00:00 – 15:00)
+# =====================================================================================
+
+# Cover -------------------------------------------------------------------------------
+s = new_slide(L_TITLE_SWIRL, keep=(0,), notes=cue(1) + """
+Welcome everyone, and thank Eric and the WTA leadership team for making time for this session.
+
+Frame it: this is a practical, skill-building hour. The goal is to give account teams the commercial confidence to manage their accounts profitably, without guesswork.
+""")
+t = ph(s, 0)
+t.left, t.top, t.width, t.height = Inches(0.52), Inches(1.7), Inches(11.0), Inches(1.2)
+t.text_frame.word_wrap = False
+t.text_frame.text = ""
+r = t.text_frame.paragraphs[0].add_run()
+r.text = "Mastering Agency Commercials"
+_style_run(r, 54, WHITE, LIGHT)
+text(s, 0.52, 3.05, 9.0, 0.9, "Aligning great client work with financial health", size=24, color=WHITE)
+rule(s, 0.52, 4.25, 1.6, 4.25, color=WHITE, width=1)
+text(s, 0.52, 4.45, 8.6, 0.8, [
+    {"t": "Erin Jemas", "font": SEMI, "size": 16, "color": WHITE},
+    {"t": "Founder & Principal, Price It Right", "size": 14, "color": WHITE},
+], line=1.15)
+
+# 1 — Welcome & objectives ------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="WELCOME", title="Today’s goals", notes=cue(2) + """
+Three goals for the hour:
+1. Understand how WTA makes money, and where profit comes from.
+2. Learn the direct levers account leads control.
+3. Get an introduction to WTA's evolved commercial model for FY2027.
+
+Walk the agenda on the right briefly. Reassure the room: no accounting background needed. Everything builds from one simple equation.
+""")
+goals = ["Understand how WTA makes money, and where profit comes from",
+         "Learn the direct levers account leads control",
+         "Get an introduction to WTA’s evolved commercial model for FY2027"]
+for i, g in enumerate(goals):
+    y = TOP + i * 1.3
+    box(s, 0.52, y, 7.2, 1.1, fill=GREY)
+    num_circle(s, 0.82, y + 0.25, 0.6, f"0{i+1}", fill=NAVY, size=14)
+    text(s, 1.7, y, 5.8, 1.1, g, size=18, color=NAVY, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
+box(s, 8.1, TOP, 4.71, 3.7, fill=NAVY)
+text(s, 8.45, TOP + 0.2, 4.0, 0.35, "AGENDA  ·  60 MINUTES", size=12, color=TEAL, font=SEMI)
+agenda = [("00:00", "Finance 101"), ("15:00", "WTA in Action"), ("35:00", "Commercial Model Intro"),
+          ("55:00", "Q&A and wrap-up")]
+for i, (when, what) in enumerate(agenda):
+    y = TOP + 0.7 + i * 0.7
+    text(s, 8.45, y, 1.0, 0.5, when, size=14, color=TEAL, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
+    text(s, 9.55, y, 3.1, 0.5, what, size=16, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
+
+divider("PART 1  ·  00:00 – 15:00", "Finance 101", "How our agency makes money", """
+Goal for this part: demystify agency accounting, agree on a common vocabulary, and define what financial health looks like.
+(Terminology reviewed with Eric so the room hears the same language Finance uses.)
 """, 0.5)
 
-# 4 — Anatomy of agency revenue -----------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="AGENCY ECONOMICS 101", title="Not every dollar we bill is agency revenue",
-              notes=cue(3) + """
-Clarify terminology — this is the most common misunderstanding in agency finance.
+# 2 — The core equation ---------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="FINANCE 101", title="The core equation of business", notes=cue(3) + """
+Every business, including ours, comes down to one equation: Revenue minus Expenses equals Profit.
 
-• Gross Billings: everything we invoice the client.
-• Pass-through / out-of-pocket: media spend, third-party production, research, travel. We bill it and the client reimburses it — but it was never ours. It flows through.
-• Net Revenue (Net Sales): what remains after pass-through. This is our true revenue baseline — every margin metric we discuss today is a percentage of Net Revenue, never of billings.
+Three terms to get right:
+• Gross Revenue (billings): everything we invoice the client, including pass-through expenses.
+• Pass-through costs: out-of-pocket costs passed directly to the client, such as media spend, production vendors, research and client travel. We bill them, but they were never ours to keep.
+• Net Revenue (also called Net Sales or Gross Margin): gross billings minus pass-through costs. This is our true revenue, the money WTA actually earns to run the business.
 
-Illustrative example: bill a client $1.0M, of which $400K is media and production pass-through → our Net Revenue is $600K.
-
-Ask the room: "On your biggest account, do you know the split between billings and Net Revenue?"
+A common mistake is to think everything we bill is revenue. It isn't. Every margin we discuss today is measured against Net Revenue.
 """)
-tiles = [
-    ("Gross Billings", "$1.0M", "Everything we invoice the client", NAVY),
-    ("Pass-Through", "$0.4M", "Media, third-party production, research, travel — reimbursed, not earned", MUTED),
-    ("Net Revenue", "$0.6M", "What remains. Our true revenue baseline — every margin starts here", RED),
-]
+eq = [("Revenue", NAVY, WHITE), ("Expenses (costs)", GREY, NAVY), ("Profit", RED, WHITE)]
 tw, ops = 3.45, 0.97
-for i, (name, val, desc, col) in enumerate(tiles):
+for i, (name, fill, fg) in enumerate(eq):
     x = 0.52 + i * (tw + ops)
-    b = box(s, x, 2.35, tw, 1.75, fill=col if i != 1 else GREY)
-    fg = WHITE if i != 1 else NAVY
-    text(s, x + 0.3, 2.5, tw - 0.6, 0.4, name.upper(), size=14, color=fg, font=SEMI)
-    text(s, x + 0.3, 2.95, tw - 0.6, 0.95, val, size=48, color=fg, font=LIGHT)
-    text(s, x, 4.3, tw, 0.9, desc, size=14, color=TEXT, line=1.15)
+    b = box(s, x, TOP, tw, 1.0, fill=fill)
+    label_in(b, name, size=24, color=fg, font=BODY)
     if i < 2:
-        text(s, x + tw, 2.35, ops, 1.75, "−" if i == 0 else "=", size=48, color=NAVY, font=LIGHT,
+        text(s, x + tw, TOP, ops, 1.0, "−" if i == 0 else "=", size=40, color=NAVY, font=LIGHT,
              align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-text(s, 0.52, 5.6, 12.29, 0.6, [
-    {"t": [{"t": "Rule of thumb  ", "font": SEMI, "color": NAVY},
-           {"t": "Every margin metric in this session is measured against Net Revenue, never billings."}]},
-], size=16, color=TEXT)
-text(s, 0.52, 6.15, 6, 0.3, "Figures illustrative", size=10, color=MUTED)
-
-# 5 — Direct costs vs overhead --------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="AGENCY ECONOMICS 101", title="What account leads control", notes=cue(3.5) + """
-Two kinds of cost — and only one of them is yours.
-
-DIRECT COSTS (in your control):
-• Direct labor — the salary, payroll taxes and benefits of the billable talent working on your accounts. Practically: % of a person's time on your client × their total compensation. Staffing decisions ARE cost decisions.
-• Non-billable client OOPs — whatever the client contract says we can't bill: local travel, entertainment, presentations, overtime meals/cars, unapproved travel — and write-offs (including reserves on aged WIP and A/R).
-
-INDIRECT COSTS / OVERHEAD (Finance's control): rent, IT infrastructure, admin, HR, legal, executive, new-business/pitch costs.
-
-KEY LINE: "Eric and the finance team manage the overhead. Your mandate as account leaders is managing the direct margin of your client engagements."
-""")
-# left: in your control (navy)
-box(s, 0.52, 2.3, 6.0, 3.95, fill=NAVY)
-text(s, 0.85, 2.5, 5.4, 0.35, "DIRECT COSTS  ·  IN YOUR CONTROL", size=14, color=TEAL, font=SEMI)
-text(s, 0.85, 3.0, 5.4, 3.1, [
-    {"t": "Direct labor", "font": SEMI, "size": 18, "after": 2},
-    {"t": "Salaries, payroll taxes and benefits of the billable talent on your accounts", "after": 14},
-    {"t": "Non-billable client out-of-pockets", "font": SEMI, "size": 18, "after": 2},
-    {"t": "Unapproved or local travel, entertainment, presentations, overtime meals and cars", "after": 14},
-    {"t": "Write-offs", "font": SEMI, "size": 18, "after": 2},
-    {"t": "Unbilled WIP and aged receivables that never get collected"},
-], size=14, color=WHITE, line=1.1)
-# right: finance's control (grey)
-box(s, 6.81, 2.3, 6.0, 3.95, fill=GREY)
-text(s, 7.14, 2.5, 5.4, 0.35, "INDIRECT COSTS / OVERHEAD  ·  FINANCE’S CONTROL", size=14, color=MUTED, font=SEMI)
-text(s, 7.14, 3.0, 5.4, 3.1, [
-    {"t": t, "bullet": True, "after": 8, "bucolor": MUTED} for t in
-    ["Rent and facilities", "IT infrastructure and equipment", "Administration and HR",
-     "Legal and accounting", "Executive leadership", "New business and pitch costs"]
-], size=16, color=TEXT)
-
-# 6 — North star: DCM -----------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="AGENCY ECONOMICS 101", title="The north star: Direct Contribution Margin",
-              notes=cue(4) + """
-This is the one metric that tells you whether an engagement is healthy.
-
-Direct Margin = Net Revenue − Direct Costs (direct labor + non-billable client OOPs). Express it as a % of Net Revenue.
-
-WTA benchmark: 55%–62% Direct Margin. Operating profit goal: 20%–25% net.
-
-Make the math simple: "For every $100K of Net Revenue, your direct labor and non-billable expenses should not exceed $38K–$45K."
-Walk the bar on the right: at the 55% floor, $45K of direct cost leaves $55K of direct margin. Overhead takes roughly $35K of that, leaving the $20K operating profit that hits our goal. Slip below the floor and profit is the first thing to go — overhead doesn't shrink because one account ran hot.
-
-KEY LINE: "When account leads consistently protect a 55%+ Direct Margin, the agency hits its profit goals — and that's what funds bonuses, raises, hiring and creative investment."
-
-(Eric: confirm the ~35% overhead illustration matches WTA's actual overhead ratio.)
-""")
-text(s, 0.52, 2.2, 7.2, 0.35, "THE FORMULA", size=14, color=RED, font=SEMI)
-text(s, 0.52, 2.6, 7.4, 0.7, [
-    {"t": [{"t": "Direct Margin  =  ", "font": SEMI, "color": NAVY},
-           {"t": "Net Revenue  −  Direct Costs", "color": NAVY}]},
-], size=24, font=BODY)
-rule(s, 0.52, 3.55, 7.3, 3.55, color=RULE)
-stats = [("55–62%", "Direct Margin target", "of Net Revenue", RED),
-         ("20–25%", "Operating profit goal", "net, after overhead", NAVY)]
-for i, (v, l1, l2, col) in enumerate(stats):
-    x = 0.52 + i * 3.6
-    text(s, x, 3.8, 3.5, 1.0, v, size=54, color=col, font=LIGHT)
-    text(s, x, 4.85, 3.4, 0.7, [{"t": l1, "font": SEMI, "color": NAVY, "size": 16}, {"t": l2, "color": MUTED}],
-         size=14)
-# $100K stacked bar (at the 55% floor)
-bx, by, bw, bh = 9.25, 2.55, 1.25, 3.7
-segs = [(45, NAVY, "Direct costs", "≤ $45K"), (35, RULE, "Overhead", "≈ $35K"), (20, RED, "Operating profit", "≥ $20K")]
-yy = by
-for v, col, name, amt in segs:
-    h = bh * v / 100
-    box(s, bx, yy, bw, h, fill=col)
-    text(s, bx + bw + 0.2, yy + h / 2 - 0.3, 2.2, 0.6, [
-        {"t": amt, "font": SEMI, "color": NAVY if col != RED else RED, "size": 16},
-        {"t": name, "color": TEXT, "size": 14}], line=1.0)
-    yy += h
-text(s, bx - 0.6, by - 0.4, bw + 1.2, 0.3, "Every $100K of Net Revenue", size=12, color=MUTED,
-     align=PP_ALIGN.CENTER)
-# bracket for direct margin (overhead + profit)
-top = by + bh * 0.45
-bot = by + bh
-rule(s, bx - 0.2, top, bx - 0.2, bot, color=RED, width=1.5)
-rule(s, bx - 0.2, top, bx - 0.05, top, color=RED, width=1.5)
-rule(s, bx - 0.2, bot, bx - 0.05, bot, color=RED, width=1.5)
-text(s, bx - 1.95, (top + bot) / 2 - 0.3, 1.65, 0.6, [
-    {"t": "≥ $55K", "font": SEMI, "color": RED, "size": 16},
-    {"t": "Direct margin", "size": 14}], align=PP_ALIGN.RIGHT, line=1.0)
-
-# 7 — Revenue vs profitability -------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="AGENCY ECONOMICS 101  ·  INTERACTIVE", title="Revenue is not the same as profitability",
-              notes=cue(4) + """
-Make it interactive: show the three profiles and ask the room, "Which account would you rather run?" Let a few people answer before revealing the margins.
-
-• Account Alpha: $2.0M Net Revenue, $1.0M direct labor → 50% Direct Margin — below the 55% floor → 14% operating margin.
-• Account Gamma: $1.0M Net Revenue, $450K direct labor → 55% Direct Margin — right at the floor → 19% operating margin.
-• Account Beta: $250K Net Revenue, $100K direct labor → 60% Direct Margin — inside the band → 24% operating margin.
-(Overhead is allocated at the same ~35.6% of Net Revenue to each account in this example.)
-
-KEY LINE: "Account Alpha brings in 8x more top line than Beta, but Beta converts nearly double the profit percentage. In WTA's new operating model, we reward margin health and commercial discipline — not just top-line volume."
-
-Then the agency-total line: one large, under-margined account drags the whole agency to 17% — below our 20% goal — even though two of three accounts are healthy.
-""")
-accts = [
-    ("ACCOUNT ALPHA", "$2.0M", "$1.0M", "50%", "14%", False),
-    ("ACCOUNT GAMMA", "$1.0M", "$450K", "55%", "19%", True),
-    ("ACCOUNT BETA", "$250K", "$100K", "60%", "24%", True),
-]
+text(s, 0.52, 3.65, 12.29, 0.3, "KEY TERMS", size=12, color=RED, font=SEMI)
+terms = [("Gross Revenue (billings)", "Everything we invoice to the client, including pass-through expenses"),
+         ("Pass-through costs", "Out-of-pocket costs passed directly to the client: media, production vendors, research, client travel"),
+         ("Net Revenue", "Billings minus pass-through. Our true revenue: the money WTA actually earns to run the business")]
 cw, gap = 3.93, 0.25
-for i, (name, nr, dl, dm, om, ok) in enumerate(accts):
+for i, (head, body_) in enumerate(terms):
     x = 0.52 + i * (cw + gap)
-    box(s, x, 2.2, cw, 0.5, fill=NAVY)
-    text(s, x + 0.3, 2.2, cw - 0.6, 0.5, name, size=14, color=WHITE, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
-    box(s, x, 2.7, cw, 2.75, fill=GREY)
-    text(s, x + 0.3, 2.85, 1.7, 0.3, "Net Revenue", size=12, color=MUTED)
-    text(s, x + 0.3, 3.1, 1.7, 0.45, nr, size=22, color=NAVY, font=SEMI)
-    text(s, x + 2.0, 2.85, 1.7, 0.3, "Direct labor", size=12, color=MUTED)
-    text(s, x + 2.0, 3.1, 1.7, 0.45, dl, size=22, color=NAVY, font=BODY)
-    rule(s, x + 0.3, 3.72, x + cw - 0.3, 3.72, color=RULE)
-    text(s, x + 0.3, 3.85, 1.7, 0.3, "Direct Margin", size=12, color=MUTED)
-    text(s, x + 0.3, 4.1, 1.7, 0.8, dm, size=44, color=RED if not ok else NAVY, font=LIGHT)
-    text(s, x + 2.0, 3.85, 1.7, 0.3, "Operating margin", size=12, color=MUTED)
-    text(s, x + 2.0, 4.1, 1.7, 0.8, om, size=44, color=RED if not ok else NAVY, font=LIGHT)
-    text(s, x + 0.3, 4.95, cw - 0.6, 0.35, "Below the 55% floor" if not ok else "Within target", size=12,
-         color=RED if not ok else BLUE, font=SEMI)
-text(s, 0.52, 5.7, 12.29, 0.6, [
-    {"t": [{"t": "Agency total  ", "font": SEMI, "color": NAVY},
-           {"t": "$3.25M Net Revenue  ·  52% Direct Margin  ·  17% operating margin. "},
-           {"t": "One account pulls the agency below its 20% goal.", "font": SEMI, "color": RED}]},
-], size=14, color=TEXT)
-text(s, 0.52, 6.12, 9, 0.3, "Illustrative accounts; overhead allocated at the same share of Net Revenue to each",
-     size=10, color=MUTED)
+    box(s, x, 4.05, cw, 2.2, fill=GREY if i < 2 else NAVY)
+    fg = NAVY if i < 2 else WHITE
+    text(s, x + 0.3, 4.25, cw - 0.6, 0.4, head, size=17, color=fg, font=SEMI)
+    text(s, x + 0.3, 4.75, cw - 0.6, 1.4, body_, size=14, color=TEXT if i < 2 else WHITE, line=1.15)
 
+# 3 — Direct costs vs overhead --------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="FINANCE 101", title="Expenses: direct costs vs. overhead", notes=cue(3) + """
+Expenses come in two kinds.
 
-# =====================================================================================
-# PART 2 — WTA IN ACTION (20:00 – 38:00)
-# =====================================================================================
-divider("PART 2  ·  20:00 – 38:00", "WTA in Action", "Front-line portfolio stewardship", """
-"Now that we share the vocabulary, let's talk about who owns these numbers. The answer is: you do — with Finance and Operations right alongside you."
-""", 0.5)
+DIRECT COSTS (client-related):
+• Direct labor: salaries, benefits and payroll taxes for the hours our billable talent spends on client work. In practice: the share of a person's time on your client multiplied by their total compensation.
+• Non-billable client out-of-pockets: client-related expenses we can't bill back, such as unapproved travel, entertainment and write-offs.
 
-# 8 — Mindset shift -------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="You are portfolio managers", notes=cue(3.5) + """
-The shift in mindset for account leads — and for Finance.
+INDIRECT COSTS / OVERHEAD (agency operations): rent, utilities, IT and equipment, administrative staff, legal, HR and marketing.
 
-• Account leads move from being passive recipients of quarterly finance reports to being active general managers of their client portfolio's margin. Revenue forecast and profitability targets are the gateway to evaluating the financial health of every client and portfolio — and you own them.
-• Finance changes too: no longer an auditing body checking timesheets after the fact, but your strategic co-pilot — helping you price, scope and structure growth before it's sold.
-
-There is cross-functional support behind every metric: Finance, Operations / resource management and project management partner with you on each account. Encourage every lead to meet their finance partner regularly — at minimum monthly.
+KEY LINE: "Overhead is shared across the agency and managed by Eric and the finance team. What account leads manage on their day-to-day business is direct cost."
 """)
-pairs = [
-    ("ACCOUNT LEADS", "Passive recipient of quarterly finance reports",
-     "Active general manager of your client portfolio’s margin"),
-    ("FINANCE", "Auditor checking timesheets after the fact",
-     "Strategic co-pilot helping you price and structure growth"),
-]
-text(s, 2.75, 2.15, 4.0, 0.35, "FROM", size=14, color=MUTED, font=SEMI)
-text(s, 8.0, 2.15, 4.0, 0.35, "TO", size=14, color=RED, font=SEMI)
-for i, (who, frm, to) in enumerate(pairs):
-    y = 2.6 + i * 1.85
-    text(s, 0.52, y, 2.0, 1.55, who, size=14, color=NAVY, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
-    box(s, 2.75, y, 4.5, 1.55, fill=GREY)
-    text(s, 3.05, y, 3.9, 1.55, frm, size=18, color=MUTED, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
-    a = box(s, 7.35, y + 0.55, 0.45, 0.45, fill=RED, shape=MSO_SHAPE.RIGHT_ARROW)
-    box(s, 8.0, y, 4.81, 1.55, fill=NAVY)
-    text(s, 8.3, y, 4.2, 1.55, to, size=18, color=WHITE, font=SEMI, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
+box(s, 0.52, TOP, 6.0, 3.95, fill=NAVY)
+text(s, 0.85, TOP + 0.2, 5.4, 0.35, "DIRECT COSTS  ·  CLIENT-RELATED", size=14, color=TEAL, font=SEMI)
+text(s, 0.85, TOP + 0.75, 5.4, 3.0, [
+    {"t": "Direct labor", "font": SEMI, "size": 18, "after": 3},
+    {"t": "Salaries, benefits and payroll taxes for the hours our billable talent spends on client work", "after": 18},
+    {"t": "Non-billable client out-of-pockets", "font": SEMI, "size": 18, "after": 3},
+    {"t": "Client-related expenses we can’t bill back: unapproved travel, entertainment, write-offs"},
+], size=14, color=WHITE, line=1.15)
+box(s, 6.81, TOP, 6.0, 3.95, fill=GREY)
+text(s, 7.14, TOP + 0.2, 5.4, 0.35, "INDIRECT COSTS / OVERHEAD  ·  AGENCY OPERATIONS", size=14, color=MUTED, font=SEMI)
+text(s, 7.14, TOP + 0.75, 5.4, 3.0, [
+    {"t": t_, "bullet": True, "after": 7, "bucolor": MUTED} for t_ in
+    ["Rent and utilities", "IT and equipment", "Administrative staff", "Legal and HR", "Marketing"]
+], size=16, color=TEXT)
 
-# 9 — Five levers ---------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Five levers of client profitability you control",
-              notes=cue(6) + """
-These are the levers that move Direct Margin. Walk each one with a real example from the room if you can.
+# 4 — Benchmark metrics ---------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="FINANCE 101", title="The benchmarks of financial health", notes=cue(3) + """
+Two targets every account lead should know.
 
-1. Pricing with buffer — never discount without pulling scope. If the budget is lower, offer options: reduce deliverables, explain the value at the full price, or show a higher-value option worth finding funding for. Fixed fees carry a baseline buffer of at least 10%.
-2. Staff mix & seniority alignment — match talent level to task complexity. Senior people on commodity production is the fastest way to burn margin. Monitor staff mix against the agreed staff plan.
-3. Aggressive scope-creep management — know what's in and out of scope; flag out-of-scope requests the moment they happen; swap deliverables (keep the fee flat) or add deliverables and increase the fee. Never absorb unbilled hours. Document everything.
-4. Contract & terms hygiene — signed estimate/SOW and PO before kickoff, every time (production included). This is how we eliminate WIP write-offs and aged receivables.
-5. Dynamic utilization planning — partner with resource management to keep the pipeline visible, so people move to other work during client delays and project gaps instead of sitting under-utilized.
+Direct Margin (also called Contribution Margin) = Net Revenue − Direct Costs. Target: 55%–62% of Net Revenue.
+Operating Profit = Direct Margin − Overhead. Target: about 20% of Net Revenue.
+
+Why Direct Margin matters: if an account delivers $100K in Net Revenue, direct costs should land between $38K and $45K. That leaves $55K–$62K of Direct Margin to cover agency overhead and create profit.
+
+Why profit matters: it pays for raises, bonuses, new technology, training and team perks.
 """)
-levers = [
-    ("Pricing with buffer", "Never discount without pulling scope. Fixed fees carry a baseline buffer of 10%+.", NAVY),
-    ("Staff mix & seniority", "Match talent level to task complexity. No senior burn on commodity production.", BLUE),
-    ("Scope-creep control", "Flag out-of-scope requests immediately. Swap deliverables, never work unbilled hours.", RED),
-    ("Contract & terms hygiene", "Signed estimates and POs before kickoff. Eliminate WIP write-offs.", ORANGE),
-    ("Utilization planning", "Partner with resource management so project gaps don’t become idle time.", CYAN),
-]
-cw, gap = 2.27, 0.235
-for i, (head, body, col) in enumerate(levers):
-    x = 0.52 + i * (cw + gap)
-    box(s, x, 2.2, cw, 0.12, fill=col)
-    box(s, x, 2.32, cw, 3.85, fill=GREY)
-    text(s, x + 0.22, 2.5, 1.0, 0.6, f"0{i+1}", size=32, color=col if col != CYAN else BLUE, font=LIGHT)
-    text(s, x + 0.22, 3.2, cw - 0.4, 0.75, head, size=17, color=NAVY, font=SEMI, line=1.05)
-    text(s, x + 0.22, 4.0, cw - 0.4, 2.05, body, size=14, color=TEXT, line=1.15)
+cards_ = [("DIRECT MARGIN", "Net Revenue  −  Direct Costs", "55–62%", "of Net Revenue", RED),
+          ("OPERATING PROFIT", "Direct Margin  −  Overhead", "~20%", "of Net Revenue", NAVY)]
+for i, (head, formula, tgt, unit, col) in enumerate(cards_):
+    x = 0.52 + i * 4.25
+    box(s, x, TOP, 4.0, 2.75, fill=GREY)
+    text(s, x + 0.3, TOP + 0.2, 3.4, 0.35, head, size=14, color=col, font=SEMI)
+    text(s, x + 0.3, TOP + 0.6, 3.4, 0.45, formula, size=16, color=NAVY)
+    rule(s, x + 0.3, TOP + 1.2, x + 3.7, TOP + 1.2, color=RULE)
+    text(s, x + 0.3, TOP + 1.3, 3.4, 0.25, "TARGET", size=11, color=MUTED, font=SEMI)
+    text(s, x + 0.3, TOP + 1.55, 3.4, 0.85, tgt, size=48, color=col, font=LIGHT)
+    text(s, x + 0.3, TOP + 2.35, 3.4, 0.3, unit, size=12, color=MUTED)
+# $100K example
+ex = 9.02
+text(s, ex, TOP, 3.79, 0.35, "EXAMPLE: $100K OF NET REVENUE", size=12, color=MUTED, font=SEMI)
+bar_y, bar_h = TOP + 0.5, 0.75
+box(s, ex, bar_y, 3.79 * 0.42, bar_h, fill=NAVY)
+box(s, ex + 3.79 * 0.42, bar_y, 3.79 * 0.58, bar_h, fill=RED)
+text(s, ex, bar_y + 0.9, 1.6, 0.7, [{"t": "$38–45K", "font": SEMI, "color": NAVY, "size": 16},
+                                     {"t": "Direct costs", "size": 13}], line=1.05)
+text(s, ex + 1.75, bar_y + 0.9, 2.0, 0.7, [{"t": "$55–62K", "font": SEMI, "color": RED, "size": 16},
+                                            {"t": "Direct Margin", "size": 13}], line=1.05)
+text(s, ex, bar_y + 1.75, 3.79, 0.6, "Direct Margin covers agency overhead and creates profit",
+     size=13, color=TEXT, line=1.1)
+# why profit matters
+text(s, 0.52, 5.35, 12.29, 0.3, "WHY PROFIT MATTERS  ·  IT PAYS FOR", size=12, color=MUTED, font=SEMI)
+perks = ["Raises", "Bonuses", "New technology", "Training", "Team perks"]
+pw = (12.29 - 4 * 0.2) / 5
+for i, p_ in enumerate(perks):
+    b = box(s, 0.52 + i * (pw + 0.2), 5.7, pw, 0.55, fill=NAVY)
+    label_in(b, p_, size=14, color=WHITE, font=SEMI)
 
-# 10 — Forecasting --------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Top-down sets ambition. Bottoms-up delivers it.",
-              notes=cue(4) + """
-Introduce the more sophisticated way WTA will report growth and forecast targets.
+# 5 — Revenue vs profitability --------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="FINANCE 101", title="Quick example: revenue vs. profitability", notes=cue(2.5) + """
+Ask the room first: "Which company would you rather run?" Take a few answers.
 
-KEY LINE: "Top-down sets our annual ambition. Bottoms-up is how you drive it month by month. Eric's team needs your ground-level visibility into pipeline likelihoods, renewal dates and scope expansions to deploy agency resources accurately."
+• Company Alpha: $2.0M revenue, $1.0M direct labor, $288K profit — a 14% margin.
+• Company Beta: $250K revenue, $100K direct labor, $61K profit — a 24% margin.
 
-Why it matters: accurate forecasts drive hiring and freelance approvals, resource allocation and whether the agency hits its profit target. A forecast that only changes at quarter-end is a surprise, not a forecast.
-
-The hybrid: leadership sets FY2027 targets by portfolio; account leads own the client-level forecast inside it and manage it dynamically as accounts move.
-(Confirm with Eric: WTA's forecast cadence and the tools account leads will update.)
+KEY LINE: "Company Alpha makes more total dollars, but Company Beta is converting a healthier percentage to profit because their scope and staffing were managed properly. Profit margin is our true measure of health."
 """)
-cols = [
-    ("TOP-DOWN STRATEGY", "Leadership & Finance", ["Annual growth ambition", "Agency profit targets",
-                                                 "FY2027 targets set by portfolio"], NAVY, WHITE),
-    ("BOTTOMS-UP REALITY", "Account leads", ["Pipeline likelihood by client", "Renewal dates and risks",
-                                            "Scope expansions and reductions", "Monthly forecast updates"], GREY, NAVY),
-]
-for i, (head, who, items, fill, fg) in enumerate(cols):
+cos = [("COMPANY ALPHA", "$2.0M", "$1.0M", "$288K", "14%", NAVY),
+       ("COMPANY BETA", "$250K", "$100K", "$61K", "24%", RED)]
+for i, (name, rev, dl, prof, mg, col) in enumerate(cos):
     x = 0.52 + i * 6.29
-    box(s, x, 2.2, 6.0, 2.95, fill=fill)
-    text(s, x + 0.35, 2.4, 5.3, 0.35, head, size=14, color=TEAL if fill == NAVY else RED, font=SEMI)
-    text(s, x + 0.35, 2.8, 5.3, 0.45, who, size=22, color=fg, font=BODY)
-    text(s, x + 0.35, 3.45, 5.3, 1.6, [{"t": t, "bullet": True, "after": 4,
-                                         "bucolor": TEAL if fill == NAVY else RED} for t in items],
-         size=15, color=fg)
-box(s, 0.52, 5.4, 12.29, 0.85, fill=None, line=NAVY, line_w=1.25)
-text(s, 0.85, 5.4, 11.7, 0.85, [
-    {"t": [{"t": "The hybrid  ", "font": SEMI, "color": RED},
-           {"t": "FY2027 targets are assigned by portfolio and managed dynamically, month by month, by the accounts within it."}]},
-], size=16, color=NAVY, anchor=MSO_ANCHOR.MIDDLE)
-
-# 11 — Portfolio buckets --------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Segment your FY2027 portfolio", notes=cue(4) + """
-Every account in your portfolio gets a designation — and each designation has a different commercial posture and margin expectation.
-
-• Growth accounts: proactive upsells; introduce new solution sets.
-• Maintenance accounts: standardize scope, drive operational efficiency, defend margin.
-• Attrition / declining accounts: manage resource reallocation deliberately to protect margin — move people before the revenue disappears, not after.
-• New business: Standardized Solution Sets from proposal day one.
-
-Exercise to suggest for after the session: each account lead tags every client in their portfolio with one of these four before FY2027 planning.
-""")
-quads = [
-    ("Growth", "Proactive upsells; introduce new solution sets", RED),
-    ("Maintenance", "Scope standardization, operational efficiency, margin defense", NAVY),
-    ("Attrition / declining", "Managed resource reallocation to protect margin", BLUE),
-    ("New business", "Standardized Solution Sets from proposal day one", ORANGE),
-]
-qw, qh = 6.0, 1.9
-for i, (head, body, col) in enumerate(quads):
-    x = 0.52 + (i % 2) * (qw + 0.29)
-    y = 2.2 + (i // 2) * (qh + 0.2)
-    box(s, x, y, qw, qh, fill=GREY)
-    num_circle(s, x + 0.35, y + 0.35, 0.6, f"0{i+1}", fill=col, size=14)
-    text(s, x + 1.2, y + 0.33, qw - 1.5, 0.6, head, size=24, color=NAVY, font=BODY, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, x + 1.2, y + 1.0, qw - 1.5, 0.75, body, size=15, color=TEXT, line=1.15)
+    box(s, x, TOP, 6.0, 0.5, fill=col)
+    text(s, x + 0.3, TOP, 5.4, 0.5, name, size=14, color=WHITE, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
+    box(s, x, TOP + 0.5, 6.0, 2.6, fill=GREY)
+    for k, (lab, val) in enumerate([("Revenue", rev), ("Direct labor", dl), ("Profit", prof)]):
+        text(s, x + 0.3 + k * 1.3, TOP + 0.7, 1.25, 0.3, lab, size=12, color=MUTED)
+        text(s, x + 0.3 + k * 1.3, TOP + 0.98, 1.25, 0.45, val, size=20, color=NAVY, font=SEMI)
+    text(s, x + 4.2, TOP + 0.7, 1.6, 0.3, "Profit margin", size=12, color=MUTED)
+    text(s, x + 4.2, TOP + 0.9, 1.6, 0.9, mg, size=48, color=col, font=LIGHT)
+    rule(s, x + 0.3, TOP + 1.95, x + 5.7, TOP + 1.95, color=RULE)
+    text(s, x + 0.3, TOP + 2.1, 5.4, 0.8,
+         "More total dollars, lower margin" if i == 0 else "Fewer dollars, healthier margin: scope and staffing managed well",
+         size=14, color=TEXT, line=1.1)
+box(s, 0.52, 5.45, 12.29, 0.8, fill=NAVY)
+text(s, 0.85, 5.45, 11.7, 0.8, [
+    {"t": [{"t": "Profit margin is our true measure of health,  ", "font": SEMI},
+           {"t": "not total revenue.", "font": LIGHT}]}],
+    size=20, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
 
 
 # =====================================================================================
-# PART 3 — THE COMMERCIAL OPERATING SYSTEM (38:00 – 55:00)
+# PART 2 — WTA IN ACTION: MANAGING GROWTH & MARGIN (15:00 – 35:00)
 # =====================================================================================
-divider("PART 3  ·  38:00 – 55:00", "The Commercial Operating System", "Compete on value, not hours", """
-"Everything so far has been about managing margin inside today's model. Now let's change the model itself."
+divider("PART 2  ·  15:00 – 35:00", "WTA in Action", "Managing growth and margin", """
+Goal for this part: connect the metrics to account leadership ownership, the levers account leads control, and dynamic FY2027 forecasting.
 """, 0.5)
 
-# 12a — Five pillars ------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="THE COMMERCIAL OPERATING SYSTEM", title="Five pillars, one system",
-              notes=cue(1.5) + """
-Define the term before we go deeper. A Commercial Operating System is the framework through which an agency consistently creates, prices, sells, contracts, delivers and measures value.
+# 6 — Who owns financial health -------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Who owns financial health at WTA?", notes=cue(3.5) + """
+The account lead is the commercial owner of their client engagement.
 
-Most agencies have invested heavily in how they deliver client work. Far fewer have invested in how they sell, package, price, contract and govern that work. The result is a commercial model that evolves organically: services get more customized, pricing varies client to client, proposals take longer, and profitability depends on individual judgment.
+Finance is your co-pilot and advisor, but account leads manage the daily scope, team mix and client relationships that create healthy margins.
 
-KEY LINE: "The shift is from individual pricing judgment to a repeatable, governed commercial system — one that aligns strategy, pricing, finance, growth, account leadership and operations."
-
-Keep this brisk; the next slides show what it looks like in practice.
+Frame this as empowerment: financial management isn't back-office paperwork. It's how account leads protect their teams from overburn and make sure WTA is fairly paid for its work.
 """)
-text(s, 0.52, 1.95, 12.29, 0.4,
-     "How WTA will consistently create, price, sell, contract, deliver and measure value",
-     size=16, color=MUTED)
-pillars = [
-    ("Commercial strategy", "Where WTA creates differentiated value, the clients it serves best, and how to position it"),
-    ("Product architecture", "Expertise turned into defined products with standardized scope, pricing logic and contract-ready language"),
-    ("Pricing & revenue model", "A modern pricing methodology that supports profitable growth and simplifies decisions"),
-    ("Organizational readiness", "Growth, Strategy, Account Leadership, Operations and Finance able to sell and deliver it"),
-    ("Commercial governance", "Reporting, decision frameworks and dashboards that keep the system evolving"),
+box(s, 0.52, TOP, 12.29, 1.2, fill=NAVY)
+text(s, 0.85, TOP, 11.7, 1.2, [
+    {"t": [{"t": "The account lead ", "font": SEMI}, {"t": "is the commercial owner of their client engagement."}]}],
+    size=24, color=WHITE, font=LIGHT, anchor=MSO_ANCHOR.MIDDLE)
+own = [("ACCOUNT LEADS MANAGE", ["Day-to-day scope", "Team mix", "Client relationships"], RED),
+       ("FINANCE PROVIDES", ["Co-pilot and advisor", "Reporting and analysis", "Pricing and forecasting support"], BLUE)]
+for i, (head, items, col) in enumerate(own):
+    x = 0.52 + i * 4.25
+    box(s, x, 3.8, 4.0, 2.45, fill=GREY)
+    text(s, x + 0.3, 4.0, 3.4, 0.35, head, size=14, color=col, font=SEMI)
+    text(s, x + 0.3, 4.45, 3.4, 1.7, [{"t": t_, "bullet": True, "after": 6, "bucolor": col} for t_ in items],
+         size=16, color=NAVY)
+box(s, 9.02, 3.8, 3.79, 2.45, fill=None, line=NAVY, line_w=1.25)
+text(s, 9.3, 3.8, 3.25, 2.45, [
+    {"t": "WHY IT MATTERS", "size": 14, "font": SEMI, "color": RED, "after": 8},
+    {"t": "Protect your team from overburn, and make sure WTA is fairly paid for its work.", "size": 16}],
+    color=NAVY, anchor=MSO_ANCHOR.MIDDLE, line=1.15)
+
+# 7 — Seven levers --------------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Seven levers account leads control", notes=cue(6.5) + """
+Seven practical levers to protect Direct Margin. Ask for a real example from the room on two or three of them.
+
+1. Proper scoping and SOW detail: define deliverables, revision rounds and client assumptions clearly.
+2. Never discount fee without scope: if the budget drops, reduce deliverables. Never work the same scope for less fee.
+3. Staff mix alignment: use the right seniority for the task. Don't spend senior strategy hours on routine production.
+4. Active scope-creep management: spot out-of-scope requests immediately, then issue a change order or swap deliverables.
+5. Resource planning: work with project managers to track actuals against staff plans monthly.
+6. Controlling non-billables: keep client travel and unapproved expenses to zero.
+7. Contract hygiene: SOWs and POs signed before kickoff, to eliminate unbillable work-in-progress (WIP) and write-offs.
+""")
+subhead(s, "Practical ways to protect Direct Margin, every day")
+levers = [
+    ("Proper scoping & SOW detail", "Define deliverables, revision rounds and client assumptions clearly"),
+    ("Never discount fee without scope", "If budget drops, reduce deliverables, never the fee alone"),
+    ("Staff mix alignment", "Right seniority for the task; senior hours on senior work"),
+    ("Active scope-creep management", "Flag out-of-scope requests; change order or swap deliverables"),
+    ("Resource planning", "Track actuals against staff plans monthly with project managers"),
+    ("Controlling non-billables", "Keep client travel and unapproved expenses to zero"),
+    ("Contract hygiene", "SOWs and POs signed before kickoff: no unbillable WIP or write-offs"),
 ]
-for i, (head, body) in enumerate(pillars):
-    y = 2.55 + i * 0.75
-    text(s, 0.52, y, 0.9, 0.62, f"0{i+1}", size=30, color=RED, font=LIGHT, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, 1.45, y, 3.6, 0.62, head, size=20, color=NAVY, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, 5.15, y, 7.66, 0.62, body, size=14, color=TEXT, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
-    rule(s, 0.52, y + 0.69, 12.81, y + 0.69, color=RULE)
+cw, rh = 6.0, 0.88
+for i, (head, body_) in enumerate(levers):
+    col_, row = (0, i) if i < 4 else (1, i - 4)
+    x = 0.52 + col_ * 6.29
+    y = TOP + row * (rh + 0.12)
+    box(s, x, y, cw, rh, fill=GREY)
+    num_circle(s, x + 0.22, y + 0.19, 0.5, str(i + 1), fill=RED if i % 2 == 0 else NAVY, size=14)
+    text(s, x + 0.95, y + 0.1, cw - 1.15, rh - 0.2, [
+        {"t": head, "font": SEMI, "color": NAVY, "size": 15, "after": 1},
+        {"t": body_, "size": 13}], color=TEXT, anchor=MSO_ANCHOR.MIDDLE, line=1.05)
+y = TOP + 3 * (rh + 0.12)
+b = box(s, 6.81, y, cw, rh, fill=NAVY)
+text(s, 7.11, y, cw - 0.6, rh, [
+    {"t": [{"t": "The common thread  ", "font": SEMI, "color": TEAL},
+           {"t": "clear scope, the right team, and signed paperwork"}]}],
+    size=14, color=WHITE, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
 
-# 12 — Products not headcount ---------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="THE COMMERCIAL OPERATING SYSTEM", title="Sell products, not headcount",
-              notes=cue(2.5) + """
-Today WTA largely sells time and materials and retainers. The evolved model sells defined products.
+# 8 — Forecasting ---------------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Revenue forecasting: top-down vs. bottoms-up", notes=cue(5) + """
+• Top-down forecasting: executive revenue targets set at the agency level.
+• Bottoms-up forecasting: account leads building realistic, monthly revenue projections based on actual client SOWs, known pipeline and renewal dates.
 
-Old model: "Here is a grid of 17 FTEs across 5 departments at a $190 blended rate."
-New model: "Here are three standardized, modular Solution Sets with defined outcomes and fixed pricing."
+KEY LINE: "Bottoms-up forecasting gives Eric and leadership a true picture of resource needs. It allows the agency to make smart hiring decisions, manage freelance costs and allocate talent effectively."
 
-CRITICAL CLARIFICATION — say all three explicitly; this is where people get confused:
-• It is NOT pay-for-performance or contingency risk.
-• It is NOT an unbundled, discounted à la carte menu.
-• It IS pre-packaged agency expertise with explicit boundaries.
-
-We can still customize to each client's needs — we just don't reinvent the wheel every time.
+The two meet in the middle: leadership sets the targets, and account leads show how each client will actually get there, month by month.
 """)
-box(s, 0.52, 2.2, 6.0, 2.2, fill=GREY)
-text(s, 0.85, 2.4, 5.4, 0.35, "OLD MODEL  ·  SELLING INPUTS", size=14, color=MUTED, font=SEMI)
-text(s, 0.85, 2.85, 5.4, 1.4, "“Here is a grid of 17 FTEs across 5 departments at a $190 blended rate.”",
-     size=20, color=TEXT, font=LIGHT, line=1.1)
-box(s, 6.81, 2.2, 6.0, 2.2, fill=NAVY)
-text(s, 7.14, 2.4, 5.4, 0.35, "NEW MODEL  ·  PRICING IMPACT", size=14, color=TEAL, font=SEMI)
-text(s, 7.14, 2.85, 5.4, 1.4,
-     "“Here are three standardized, modular Solution Sets with defined outcomes and fixed pricing.”",
-     size=20, color=WHITE, font=BODY, line=1.1)
-chips = [("✕", "It is NOT", "pay-for-performance or contingency risk", MUTED),
-         ("✕", "It is NOT", "an unbundled, discounted à la carte menu", MUTED),
-         ("✓", "It IS", "pre-packaged agency expertise with explicit boundaries", RED)]
-cw, gap = 3.93, 0.25
-for i, (mark, lead, body, col) in enumerate(chips):
-    x = 0.52 + i * (cw + gap)
-    box(s, x, 4.7, cw, 1.5, fill=None, line=col, line_w=1.25)
-    num_circle(s, x + 0.3, 4.98, 0.5, mark, fill=col, size=16)
-    text(s, x + 1.0, 4.85, cw - 1.2, 1.25, [
-        {"t": lead, "font": SEMI, "color": col if col == RED else NAVY, "size": 16, "after": 2},
-        {"t": body}], size=14, color=TEXT, line=1.1)
+cols = [("TOP-DOWN", "Set by leadership", "Executive revenue targets set at the agency level", NAVY, WHITE, TEAL),
+        ("BOTTOMS-UP", "Built by account leads", "Realistic monthly revenue projections based on actual client SOWs, known pipeline and renewal dates", GREY, NAVY, RED)]
+for i, (head, who, body_, fill, fg, acc) in enumerate(cols):
+    x = 0.52 + i * 6.29
+    box(s, x, TOP, 6.0, 2.5, fill=fill)
+    text(s, x + 0.35, TOP + 0.2, 5.3, 0.35, head, size=14, color=acc, font=SEMI)
+    text(s, x + 0.35, TOP + 0.6, 5.3, 0.45, who, size=22, color=fg)
+    text(s, x + 0.35, TOP + 1.2, 5.3, 1.2, body_, size=16, color=fg, line=1.15)
+text(s, 0.52, 5.1, 12.29, 0.3, "WHAT A GOOD BOTTOMS-UP FORECAST MAKES POSSIBLE", size=12, color=MUTED, font=SEMI)
+wins = ["Smart hiring decisions", "Managed freelance costs", "Effective talent allocation"]
+ww = (12.29 - 2 * 0.25) / 3
+for i, w_ in enumerate(wins):
+    b = box(s, 0.52 + i * (ww + 0.25), 5.45, ww, 0.8, fill=None, line=NAVY, line_w=1.25)
+    label_in(b, w_, size=16, color=NAVY, font=SEMI)
 
-# 13 — Four-step framework ------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="THE COMMERCIAL OPERATING SYSTEM", title="The four-step productization framework",
-              notes=cue(3.5) + """
-1. Define the Unit — what is the client actually buying? A campaign, a platform, a monthly stewardship. Clients don't care about 25% of an ACD, FTE counts, utilization rates or our staffing plan. They care about what their investment delivers.
-2. Define the Product — document exact inclusions and explicit exclusions: volume, platforms, asset types, cadence, rounds of revision, client responsibilities. "Ambiguity is where margin bleeds." Every undefined element is a future scope dispute.
-3. Price the Product — use historical effort to inform cost, but set the price on market value and client impact. Time informs pricing; it does not define it.
-4. Build the Offering — clear, decision-ready, menu-style proposals: product, scope definition, price per unit, quantity. Everything the client needs to decide in one view.
+# 9 — Portfolio categories ------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="WTA IN ACTION", title="Managing FY2027 portfolio targets", notes=cue(4.5) + """
+FY2027 targets are managed dynamically, account by account, and each account falls into a category with its own focus.
 
-Who participates: account leadership shapes the product from the client's perspective; commercial finance ensures it's clear, complete, priced consistently and protects margin.
+• Growth accounts: identify organic upsell opportunities and introduce new capabilities.
+• Maintenance accounts: standardize delivery, protect baseline margins and streamline workflow.
+• Declining / attrition accounts: actively manage resource roll-offs so labor costs don't outpace falling revenue.
+• New business: set up the commercial terms correctly from day one.
+
+Suggested follow-up: each account lead places every client in one of these four categories ahead of FY2027 planning.
 """)
-steps = [
-    ("Define the unit", "Identify what the client is actually buying: a campaign, a platform, a monthly stewardship."),
-    ("Define the product", "Document exact inclusions and explicit exclusions."),
-    ("Price the product", "Historical effort informs cost; market value and client impact set price."),
-    ("Build the offering", "Present clear, decision-ready, menu-style proposals."),
+subhead(s, "Every account has a category, and every category has a focus")
+quads = [
+    ("Growth", "Identify organic upsell opportunities and introduce new capabilities", RED),
+    ("Maintenance", "Standardize delivery, protect baseline margins and streamline workflow", NAVY),
+    ("Declining / attrition", "Manage resource roll-offs so labor costs don’t outpace falling revenue", BLUE),
+    ("New business", "Set up the commercial terms correctly from day one", ORANGE),
 ]
+qw, qh = 6.0, 1.85
+for i, (head, body_, col) in enumerate(quads):
+    x = 0.52 + (i % 2) * (qw + 0.29)
+    y = TOP + (i // 2) * (qh + 0.2)
+    box(s, x, y, qw, qh, fill=GREY)
+    num_circle(s, x + 0.35, y + 0.3, 0.6, f"0{i+1}", fill=col, size=14)
+    text(s, x + 1.2, y + 0.3, qw - 1.5, 0.6, head, size=22, color=NAVY, anchor=MSO_ANCHOR.MIDDLE)
+    text(s, x + 1.2, y + 0.95, qw - 1.5, 0.8, body_, size=15, color=TEXT, line=1.15)
+
+
+# =====================================================================================
+# PART 3 — COMMERCIAL MODEL INTRODUCTION: EVOLVING BEYOND THE HOUR (35:00 – 55:00)
+# =====================================================================================
+divider("PART 3  ·  35:00 – 55:00", "Commercial Model Intro", "Evolving beyond the hour", """
+Goal for this part: explain the industry shift away from time and materials toward standardized Solution Sets, with clear guardrails and a practical case study.
+""", 0.5)
+
+# 10 — Where the industry is going ----------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="COMMERCIAL MODEL", title="Where the industry is going", notes=cue(3) + """
+• Current state: most of our work is time and materials (T&M) or retainers built from hours.
+• The problem: T&M penalizes efficiency. When we get faster and smarter, we bill fewer hours. And clients scrutinize hourly rates instead of valuing the outcome.
+• The evolved model: standardized, value-based Solution Sets that package defined deliverables with clear pricing.
+
+The point to land: getting better at our craft should help the agency, not reduce what we're paid.
+""")
+steps3 = [("THE CURRENT STATE", "Time & materials and hourly-derived retainers", GREY, NAVY, MUTED),
+          ("THE PROBLEM", "T&M penalizes efficiency: when we get faster and smarter, we bill fewer hours. Clients scrutinize rates instead of valuing the outcome.", GREY, NAVY, RED),
+          ("THE EVOLVED MODEL", "Standardized, value-based Solution Sets: defined deliverables with clear pricing", NAVY, WHITE, TEAL)]
+sw, sg = 3.75, 0.52
+for i, (head, body_, fill, fg, acc) in enumerate(steps3):
+    x = 0.52 + i * (sw + sg)
+    box(s, x, TOP, sw, 3.9, fill=fill)
+    text(s, x + 0.3, TOP + 0.25, sw - 0.6, 0.35, head, size=14, color=acc, font=SEMI)
+    text(s, x + 0.3, TOP + 0.75, sw - 0.6, 3.0, body_, size=18 if i != 1 else 16, color=fg, line=1.15)
+    if i < 2:
+        box(s, x + sw + 0.08, TOP + 1.7, 0.36, 0.42, fill=RED, shape=MSO_SHAPE.RIGHT_ARROW)
+
+# 11 — IS / IS NOT --------------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="COMMERCIAL MODEL", title="What this model is, and what it is not", notes=cue(3) + """
+Be explicit here; this is where most of the questions come from.
+
+• It IS: pre-packaged, modular scopes of work with fixed pricing, clear deliverables and standardized terms.
+• It is NOT pay-for-performance: we are not tying agency compensation to client sales or contingency risk.
+• It is NOT an à la carte discount menu: clients can't pick and choose individual micro-tasks at a discount. They purchase complete, integrated Solution Sets.
+""")
+box(s, 0.52, TOP, 6.0, 3.9, fill=NAVY)
+num_circle(s, 0.85, TOP + 0.3, 0.6, "✓", fill=RED, size=18)
+text(s, 1.65, TOP + 0.3, 4.6, 0.6, "It IS", size=24, color=WHITE, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
+text(s, 0.85, TOP + 1.2, 5.3, 2.5, [
+    {"t": t_, "bullet": True, "after": 8, "bucolor": TEAL} for t_ in
+    ["Pre-packaged, modular scopes of work", "Fixed pricing", "Clear deliverables", "Standardized terms"]],
+    size=18, color=WHITE)
+nots = [("Pay-for-performance", "We are not tying agency compensation to client sales or contingency risk"),
+        ("An à la carte discount menu", "Clients purchase complete, integrated Solution Sets, not individual micro-tasks at a discount")]
+for i, (head, body_) in enumerate(nots):
+    y = TOP + i * 2.0
+    box(s, 6.81, y, 6.0, 1.9, fill=GREY)
+    num_circle(s, 7.11, y + 0.3, 0.5, "✕", fill=MUTED, size=14)
+    text(s, 7.8, y + 0.22, 4.8, 0.65, [{"t": "It is NOT", "size": 13, "color": MUTED, "font": SEMI},
+                                       {"t": head, "size": 18, "color": NAVY, "font": SEMI}], line=1.0)
+    text(s, 7.8, y + 0.95, 4.8, 0.9, body_, size=14, color=TEXT, line=1.15)
+
+# 12 — Four-step framework ------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="COMMERCIAL MODEL", title="How we turn services into Solution Sets", notes=cue(4) + """
+A four-step framework.
+
+1. Define the unit: what is the client actually buying? A social campaign, a brand platform, an activation, ongoing stewardship.
+2. Define the scope: explicitly list what is included AND what is out of scope. Ambiguity is where margin disappears.
+3. Price for value: use historical effort to benchmark costs, but set price based on the value of the deliverable.
+4. Build the offering: present clean, menu-style proposals instead of complex staffing grids.
+""")
+subhead(s, "A four-step framework")
+steps = [("Define the unit", "What is the client actually buying? A campaign, a platform, an activation, ongoing stewardship"),
+         ("Define the scope", "List what is included and what is out of scope"),
+         ("Price for value", "Historical effort benchmarks cost; deliverable value sets price"),
+         ("Build the offering", "Clean, menu-style proposals instead of complex staffing grids")]
 sw = 2.9
 xs = [0.52 + i * (sw + 0.23) for i in range(4)]
-rule(s, xs[0] + 0.4, 2.65, xs[-1] + 0.4, 2.65, color=RULE, width=1.5)
-for i, (head, body) in enumerate(steps):
+rule(s, xs[0] + 0.4, TOP + 0.4, xs[-1] + 0.4, TOP + 0.4, color=RULE, width=1.5)
+for i, (head, body_) in enumerate(steps):
     x = xs[i]
-    num_circle(s, x, 2.25, 0.8, f"0{i+1}", fill=NAVY if i < 3 else RED, size=18)
-    text(s, x, 3.3, sw, 0.45, head, size=20, color=NAVY, font=SEMI)
-    text(s, x, 3.8, sw - 0.15, 1.4, body, size=15, color=TEXT, line=1.15)
-q = box(s, 0.52, 5.35, 12.29, 0.9, fill=GREY)
-text(s, 0.85, 5.35, 11.7, 0.9, [
-    {"t": [{"t": "Ambiguity is where margin bleeds. ", "font": SEMI, "color": RED},
-           {"t": "Every undefined element is a future scope dispute."}]},
-], size=18, color=NAVY, anchor=MSO_ANCHOR.MIDDLE)
+    num_circle(s, x, TOP, 0.8, f"0{i+1}", fill=NAVY if i < 3 else RED, size=18)
+    text(s, x, TOP + 1.05, sw, 0.45, head, size=20, color=NAVY, font=SEMI)
+    text(s, x, TOP + 1.55, sw - 0.15, 1.5, body_, size=15, color=TEXT, line=1.15)
+box(s, 0.52, 5.6, 12.29, 0.68, fill=GREY)
+text(s, 0.85, 5.6, 11.7, 0.68, [
+    {"t": [{"t": "Ambiguity is where margin disappears.  ", "font": SEMI, "color": RED},
+           {"t": "Every undefined element is a future scope disagreement."}]}],
+    size=18, color=NAVY, anchor=MSO_ANCHOR.MIDDLE)
 
-# 14 — Case study: before -------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="CASE STUDY  ·  THE RETAIL PITCH WIN", title="How it started: three staffing grids",
-              notes=cue(2.5) + """
-Illustrative retail parallel (coordinate the WTA framing with Abby before the session). Keep the prospect and agency unnamed.
+# 13 — Case study ---------------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="CASE STUDY", title="Case study: a retail pitch win", notes=cue(4.5) + """
+Retail pitch example (keep the client unnamed on screen).
 
-The setup: a large retail prospect issued a complex, multi-year RFP — no stated budget, shifting priorities, multiple initiatives, and a strong incumbent with deep relationships. On paper, unwinnable.
+The legacy approach: a multi-year RFP answered with complex FTE staffing options — 17 to 26 FTEs across 5 departments, $7.4M to $10.1M. The client got bogged down auditing hours and rates.
 
-The first response was the classic one: three FTE-based staffing options at a $190 blended hourly rate, over 19 months — $7.4M, $8.4M and $10.1M; 17 to 26 FTEs.
+The Solution Set approach:
+• Pulse Campaigns: targeted multi-platform activations at $75,000 per campaign. The client adjusts volume easily, with zero rate negotiations.
+• Milestone Activations: full multi-channel brand moments at $500,000 per activation.
+• Monthly Stewardship: ongoing strategic continuity and reporting at $25,000 per month.
 
-The trap: no defined outcomes, no scope guardrails, no way for the client to know what they were actually buying. Procurement got bogged down auditing hours. Pricing drove to hours, not value.
+KEY LINE: "By packaging our capabilities into clear Solution Sets, the client understood exactly what their budget delivered. It removed friction around staffing, accelerated speed to sale, and protected our margin."
 """)
-opts = [("ESSENTIAL", "17", "48,450", "$7.4M"),
-        ("SIGNATURE", "21", "59,850", "$8.4M"),
-        ("FULL-SCALE", "26", "74,100", "$10.1M")]
-cw, gap = 3.93, 0.25
-for i, (name, fte, hrs, fee) in enumerate(opts):
-    x = 0.52 + i * (cw + gap)
-    box(s, x, 2.2, cw, 2.75, fill=GREY)
-    text(s, x + 0.3, 2.38, cw - 0.6, 0.35, f"{name} OPTION", size=14, color=MUTED, font=SEMI)
-    text(s, x + 0.3, 2.8, cw - 0.6, 0.9, fee, size=48, color=NAVY, font=LIGHT)
-    rule(s, x + 0.3, 3.85, x + cw - 0.3, 3.85, color=RULE)
-    text(s, x + 0.3, 4.0, cw - 0.6, 0.8, [
-        {"t": f"{fte} FTEs  ·  {hrs} hours", "font": SEMI, "color": NAVY},
-        {"t": "$190 blended rate  ·  19 months", "color": MUTED}], size=14, line=1.15)
-box(s, 0.52, 5.2, 12.29, 1.05, fill=None, line=RED, line_w=1.25)
-text(s, 0.85, 5.2, 11.7, 1.05, [
-    {"t": [{"t": "The trap  ", "font": SEMI, "color": RED},
-           {"t": "No defined outcomes, no scope guardrails, no way for the client to know what they were buying. Procurement bogged down in hourly audits."}]},
-], size=16, color=NAVY, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
+box(s, 0.52, TOP, 4.6, 3.9, fill=GREY)
+text(s, 0.85, TOP + 0.25, 4.0, 0.35, "BEFORE  ·  LEGACY APPROACH", size=14, color=MUTED, font=SEMI)
+text(s, 0.85, TOP + 0.75, 4.0, 0.8, "$7.4M–$10.1M", size=40, color=NAVY, font=LIGHT)
+text(s, 0.85, TOP + 1.6, 4.0, 2.2, [
+    {"t": "17–26 FTEs across 5 departments", "font": SEMI, "color": NAVY, "after": 10},
+    {"t": "A multi-year RFP answered with complex staffing options. The client got bogged down auditing hours and rates."}],
+    size=15, color=TEXT, line=1.15)
+box(s, 5.32, TOP + 1.72, 0.36, 0.42, fill=RED, shape=MSO_SHAPE.RIGHT_ARROW)
+text(s, 5.88, TOP, 6.93, 0.35, "AFTER  ·  SOLUTION SET APPROACH", size=14, color=RED, font=SEMI)
+prods = [("Pulse Campaigns", "$75K", "per campaign", "Targeted multi-platform activations; client adjusts volume with zero rate negotiations"),
+         ("Milestone Activations", "$500K", "per activation", "Full multi-channel brand moments"),
+         ("Monthly Stewardship", "$25K", "per month", "Ongoing strategic continuity and reporting")]
+for i, (name, price, unit, body_) in enumerate(prods):
+    y = TOP + 0.45 + i * 1.17
+    box(s, 5.88, y, 6.93, 1.05, fill=NAVY if i == 0 else (BLUE if i == 1 else RED))
+    text(s, 6.15, y, 2.3, 1.05, [{"t": price, "size": 30, "font": LIGHT}, {"t": unit, "size": 12}],
+         color=WHITE, anchor=MSO_ANCHOR.MIDDLE, line=0.95)
+    text(s, 8.45, y, 4.2, 1.05, [{"t": name, "size": 16, "font": SEMI, "after": 1}, {"t": body_, "size": 13}],
+         color=WHITE, anchor=MSO_ANCHOR.MIDDLE, line=1.05)
 
-# 15 — Case study: after --------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="CASE STUDY  ·  THE RETAIL PITCH WIN", title="The productized breakthrough",
-              notes=cue(3) + """
-The rework: three products, each independently purchasable. The client builds its own portfolio.
+# 14 — Benefits -----------------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="COMMERCIAL MODEL", title="Benefits for clients and for WTA", notes=cue(2.5) + """
+A win-win.
 
-• Pulse Campaigns — targeted digital activation across 2 platforms, $75,000 per campaign. The client dials volume up or down; zero hourly renegotiation.
-• Milestone Activations — full multi-channel brand moments with full creative production, $500,000 per activation.
-• Monthly Strategic Stewardship — ongoing continuity, reporting and strategic advisory, $25,000 per month. No separate SOW required.
+For our clients: total price transparency, predictable outcomes, faster turnaround, and flexibility without re-contracting.
 
-The outcome: the underdog won — displacing a long-standing incumbent.
-
-KEY LINE: "The creative was great, but the commercial model was the deciding factor. The client had total budget predictability, and the agency had zero staffing debates."
+For account teams: faster proposals; no more debates over timesheets and headcount; simpler change orders; and teams deliver proven services repeatedly without reinventing the wheel each time.
 """)
-prods = [("Pulse Campaigns", "$75K", "per campaign",
-          "Targeted 2-platform digital activations. Client dials volume up or down with zero hourly renegotiation."),
-         ("Milestone Activations", "$500K", "per activation",
-          "Full multi-channel brand moments, full creative production included."),
-         ("Strategic Stewardship", "$25K", "per month",
-          "Ongoing continuity, reporting and strategic advisory.")]
-cw, gap = 3.93, 0.25
-for i, (name, price, unit, body) in enumerate(prods):
-    x = 0.52 + i * (cw + gap)
-    box(s, x, 2.2, cw, 0.5, fill=[NAVY, BLUE, RED][i])
-    text(s, x + 0.3, 2.2, cw - 0.6, 0.5, name.upper(), size=14, color=WHITE, font=SEMI, anchor=MSO_ANCHOR.MIDDLE)
-    box(s, x, 2.7, cw, 2.35, fill=GREY)
-    text(s, x + 0.3, 2.85, cw - 0.6, 0.9, [
-        {"t": [{"t": price, "size": 44, "font": LIGHT, "color": NAVY},
-               {"t": "  " + unit, "size": 14, "color": MUTED}]}])
-    text(s, x + 0.3, 3.85, cw - 0.6, 1.1, body, size=14, color=TEXT, line=1.15)
-box(s, 0.52, 5.3, 12.29, 0.95, fill=NAVY)
-text(s, 0.85, 5.3, 11.7, 0.95, [
-    {"t": [{"t": "The underdog won.  ", "font": SEMI, "color": WHITE},
-           {"t": "Creative mattered, but the commercial model was the deciding factor.", "font": LIGHT}]},
-], size=20, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
-
-# 16 — What we gain -------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="THE COMMERCIAL OPERATING SYSTEM", title="What we gain: speed, margin and sanity",
-              notes=cue(1.5) + """
-For the client: total clarity on what they're buying, flexibility to adjust volume without re-contracting, and budget certainty.
-
-For WTA account leads:
-• Faster speed to sale — no custom staffing plan built from scratch for every proposal.
-• No timesheet arguments with clients — we talk about outcomes, not hours.
-• Clear change orders — inclusions and exclusions are already written down, so out-of-scope is obvious to everyone.
-• Delivery teams execute proven solution sets instead of reinventing the wheel; repeating the same products builds deeper expertise, and there's no translation gap between what's in the contract and what gets executed.
-
-Bottom row is a PLACEHOLDER for a supporting case study and its results. Add or remove before the session.
-""")
-cols = [
-    ("FOR THE CLIENT", ["Total clarity on deliverables", "Flexibility without re-contracting", "Budget certainty"], GREY, NAVY, RED),
-    ("FOR WTA ACCOUNT LEADS", ["Faster speed to sale", "No timesheet arguments with clients", "Clear, simple change orders",
-                               "Delivery runs proven solution sets"], NAVY, WHITE, TEAL),
-]
+cols = [("FOR OUR CLIENTS", ["Total price transparency", "Predictable outcomes", "Faster turnaround",
+                             "Flexibility without re-contracting"], GREY, NAVY, RED),
+        ("FOR ACCOUNT TEAMS", ["Faster proposals", "No debates over timesheets or headcount", "Simpler change orders",
+                               "Proven services, delivered repeatedly"], NAVY, WHITE, TEAL)]
 for i, (head, items, fill, fg, acc) in enumerate(cols):
     x = 0.52 + i * 6.29
-    box(s, x, 2.2, 6.0, 2.45, fill=fill)
-    text(s, x + 0.35, 2.38, 5.3, 0.35, head, size=14, color=acc, font=SEMI)
-    text(s, x + 0.35, 2.85, 5.3, 1.75, [{"t": t, "bullet": True, "after": 3, "bucolor": acc} for t in items],
-         size=16, color=fg)
-box(s, 0.52, 4.9, 12.29, 1.35, fill=None, line=MUTED, line_w=1)
-text(s, 0.85, 4.9, 11.7, 1.35, [
-    {"t": "CASE STUDY PLACEHOLDER", "font": SEMI, "color": MUTED, "size": 12, "after": 4},
-    {"t": "Supporting case study and results to be added", "color": MUTED, "size": 18, "font": LIGHT}],
-    anchor=MSO_ANCHOR.MIDDLE)
+    box(s, x, TOP, 6.0, 3.9, fill=fill)
+    text(s, x + 0.4, TOP + 0.3, 5.2, 0.35, head, size=14, color=acc, font=SEMI)
+    for k, it in enumerate(items):
+        y = TOP + 0.9 + k * 0.72
+        num_circle(s, x + 0.4, y + 0.08, 0.42, "✓", fill=acc, color=WHITE if fill == GREY else NAVY, size=12)
+        text(s, x + 1.05, y, 4.8, 0.6, it, size=18, color=fg, anchor=MSO_ANCHOR.MIDDLE)
 
-# 17 — Rollout ------------------------------------------------------------------------
-s = new_slide(L_CONTENT, eyebrow="THE COMMERCIAL OPERATING SYSTEM", title="The WTA phased rollout", notes=cue(2) + """
-We are starting with new business, and phasing the model into existing clients deliberately — client by client, with a strategic plan for when and how to introduce it.
+# 15 — Rollout ------------------------------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="COMMERCIAL MODEL", title="How WTA is rolling this out", notes=cue(2.5) + """
+A practical, phased roadmap.
 
-• Phase 1 (immediate / Q4): inbound RFPs and new business lead with Solution Sets.
-• Phase 2 (FY2027 planning): identify which existing client contracts transition during their annual renewal cycles, with a plan per client.
-• Phase 3 (January 1, 2027): full adoption across budgeting, forecasting and portfolio management.
+1. Starting with new business: introducing packaged Solution Sets in new pitches and inbound RFPs, where we have a clean slate.
+2. Client-by-client strategic transition: working with account leads to assess existing retainer clients and transition them to Solution Sets at contract renewal or SOW milestone dates.
+3. Tools and support: pre-built scope templates, pricing guidance, and cross-functional support from Finance and Operations.
 
-ENABLEMENT: reassure the room that account leads will be supported through implementation, so no one has to invent pricing from scratch.
-
-FINANCIAL GUARDRAIL (Eric's domain): timesheets are still required internally as the legal and audit record that measures direct labor cost and margin. We simply stop using them as the public pricing mechanism for clients.
+Reassure the room: nothing changes overnight on existing accounts, and no one builds pricing alone.
 """)
-phases = [("PHASE 1", "Immediate / Q4", "Inbound RFPs and new business lead with Solution Sets", NAVY),
-          ("PHASE 2", "FY2027 planning", "Identify existing client contracts to transition at annual renewal, with a plan per client", BLUE),
-          ("PHASE 3", "January 1, 2027", "Full adoption across budgeting, forecasting and portfolio management", RED)]
+subhead(s, "A practical, phased roadmap")
+phases = [("01", "Start with new business", "Packaged Solution Sets in new pitches and inbound RFPs, where we have a clean slate", NAVY),
+          ("02", "Client-by-client transition", "Assess existing retainer clients together and transition them at contract renewal or SOW milestone dates", BLUE),
+          ("03", "Tools & support", "Pre-built scope templates, pricing guidance, and cross-functional support from Finance and Operations", RED)]
 pw, gap = 3.93, 0.25
-for i, (ph_, when, body, col) in enumerate(phases):
+for i, (n, head, body_, col) in enumerate(phases):
     x = 0.52 + i * (pw + gap)
-    box(s, x, 2.2, pw, 0.12, fill=col)
-    box(s, x, 2.32, pw, 2.6, fill=GREY)
-    text(s, x + 0.3, 2.5, pw - 0.6, 0.35, ph_, size=14, color=col, font=SEMI)
-    text(s, x + 0.3, 2.85, pw - 0.6, 0.45, when, size=20, color=NAVY, font=SEMI)
-    text(s, x + 0.3, 3.4, pw - 0.6, 1.3, body, size=14, color=TEXT, line=1.15)
-box(s, 0.52, 5.2, 12.29, 1.05, fill=NAVY)
-text(s, 0.85, 5.2, 11.7, 1.05, [
-    {"t": [{"t": "Where we start  ", "font": SEMI, "color": TEAL},
-           {"t": "New business first. Existing clients follow, each with a plan for when and how the model is introduced."}]},
-], size=16, color=WHITE, anchor=MSO_ANCHOR.MIDDLE, line=1.1)
+    box(s, x, TOP, pw, 3.9, fill=GREY)
+    num_circle(s, x + 0.3, TOP + 0.3, 0.7, n, fill=col, size=16)
+    text(s, x + 0.3, TOP + 1.25, pw - 0.6, 0.8, head, size=20, color=NAVY, font=SEMI, line=1.05)
+    text(s, x + 0.3, TOP + 2.25, pw - 0.6, 1.55, body_, size=15, color=TEXT, line=1.15)
 
 
 # =====================================================================================
-# THE WRAP (55:00 – 60:00)
+# WRAP-UP & Q&A (55:00 – 60:00)
 # =====================================================================================
 
-# 18 — Golden rules -------------------------------------------------------------------
-s = new_slide(L_DARK, eyebrow="THE COMMERCIAL GOLDEN RULES", notes=cue(2) + """
-If you remember nothing else from today, remember these three.
-
-1. Direct Margin (55%–62%) is your primary health metric.
-2. Time informs our cost — it does not define our price. (Timesheets stay: they're how we measure cost and margin internally.)
-3. Just because our team can do something doesn't mean we should sell it without a defined scope. Productization creates focus; focus creates margin.
+# 16 — Key takeaways ------------------------------------------------------------------
+s = new_slide(L_DARK, eyebrow="KEY TAKEAWAYS", notes=cue(2) + """
+Three things to take back to your accounts:
+1. Direct Margin (55%–62%) is our primary measure of account health.
+2. Account leads control the levers: scope clarity, staff mix and change management.
+3. Solution Sets help us sell clarity and value instead of just selling hours.
 """)
-rules_ = [("Direct Margin of 55–62%", "is your primary health metric."),
-          ("Time informs our cost.", "It does not define our price."),
-          ("Just because we can doesn’t mean we should", "sell it without a defined scope.")]
+rules_ = [("Direct Margin of 55–62%", "is our primary measure of account health."),
+          ("Account leads control the levers:", "scope clarity, staff mix and change management."),
+          ("Solution Sets help us sell clarity and value,", "instead of just selling hours.")]
 for i, (a_, b_) in enumerate(rules_):
     y = 1.35 + i * 1.65
     text(s, 0.52, y, 1.4, 1.2, f"0{i+1}", size=60, color=WHITE, font=LIGHT, anchor=MSO_ANCHOR.MIDDLE)
     text(s, 2.1, y, 10.5, 1.2, [
-        {"t": a_, "font": SEMI, "size": 30, "color": WHITE, "after": 2},
-        {"t": b_, "font": LIGHT, "size": 26, "color": WHITE}], anchor=MSO_ANCHOR.MIDDLE, line=1.0)
+        {"t": a_, "font": SEMI, "size": 28, "color": WHITE, "after": 2},
+        {"t": b_, "font": LIGHT, "size": 24, "color": WHITE}], anchor=MSO_ANCHOR.MIDDLE, line=1.0)
     if i < 2:
         rule(s, 2.1, y + 1.42, 12.81, y + 1.42, color=WHITE, width=0.5)
 
-# 19 — Q&A ----------------------------------------------------------------------------
-s = new_slide(L_CLOSING, title="Let’s build FY2027 together", keep=(16,), notes=cue(3) + """
-Closing line before handing over: "Agencies shouldn't compete on how many hours they sell. They should compete on how effectively they create value — and how intentionally they capture it."
+# 17 — Q&A ----------------------------------------------------------------------------
+s = new_slide(L_CLOSING, title="Questions & open floor", keep=(16,), notes=cue(3) + """
+Open the floor for account leads to ask practical questions about forecasting, SOW scoping or upcoming renewals. Eric (CFO) and commercial leads are available to add color.
 
-Invite Eric (CFO) and commercial leadership to share brief closing remarks.
-Then open the floor to account leads for tactical questions.
-
-Likely questions to be ready for:
-• "Do we still fill out timesheets?" — Yes. Internally they measure cost and margin and are our legal/audit record; they're just no longer the client's price tag.
-• "What happens to my existing retainer clients?" — Nothing changes overnight. Phase 2 builds a client-by-client transition plan around renewal dates.
-• "What if a client insists on hours?" — We can still show effort internally to inform cost; the conversation we lead with is products and outcomes.
-• "Who sets the prices?" — Account leadership and commercial finance together, using shared pricing tools and a common product catalog.
+Questions to be ready for:
+• "Do we still fill out timesheets?" Yes. Internally they measure cost and margin; they just stop being how we price for clients.
+• "What happens to my existing retainer clients?" Nothing changes overnight. We'll plan each transition together around renewal or SOW milestone dates.
+• "Who sets the price of a Solution Set?" Account leadership and Finance together, using pricing guidance and scope templates.
 """)
 t = ph(s, 0)
 t.left, t.top, t.width, t.height = Inches(0.52), Inches(2.2), Inches(12.29), Inches(1.2)
@@ -899,17 +771,49 @@ for r in t.text_frame.paragraphs[0].runs:
     r.font.size = Pt(54)
 b = ph(s, 16)
 b.text_frame.text = ""
-tf = b.text_frame
-for i, (lead, rest) in enumerate([("Closing remarks  ", "Eric, CFO, and commercial leadership"),
-                                  ("Open floor  ", "Your tactical questions")]):
-    p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-    p.alignment = PP_ALIGN.CENTER
-    r = p.add_run(); r.text = lead; _style_run(r, 18, WHITE, SEMI)
-    r = p.add_run(); r.text = rest; _style_run(r, 18, WHITE, BODY)
+p = b.text_frame.paragraphs[0]
+p.alignment = PP_ALIGN.CENTER
+r = p.add_run(); r.text = "Forecasting  ·  SOW scoping  ·  Upcoming renewals"
+_style_run(r, 18, WHITE, BODY)
+p = b.text_frame.add_paragraph()
+p.alignment = PP_ALIGN.CENTER
+r = p.add_run(); r.text = "With Eric (CFO) and commercial leads"
+_style_run(r, 16, WHITE, LIGHT)
+
+# Appendix — cheat sheet of terms -----------------------------------------------------
+s = new_slide(L_CONTENT, eyebrow="APPENDIX", title="Cheat sheet of terms", notes="""
+Reference slide for after the session (not presented). Terms and targets aligned with Eric (CFO).
+""")
+rows = [("Metric / term", "Plain-language definition", "WTA target"),
+        ("Net Revenue (Net Sales)", "Total billings minus pass-through expenses (media, external production, research)", "True agency top line"),
+        ("Direct Labor", "Total compensation (salary, taxes, benefits) for billable time spent on an account", "Max 40% of Net Revenue"),
+        ("Direct Margin", "What remains from Net Revenue after subtracting Direct Costs (labor + non-billable OOPs)", "55% – 62%"),
+        ("Overhead", "Fixed agency operating expenses (rent, admin, IT, executive, shared services)", "~30% of Net Revenue"),
+        ("Operating Profit", "What’s left after Direct Costs and Overhead are covered", "~20%"),
+        ("Solution Set", "A standardized, packaged scope of work with defined inclusions, exclusions and fixed pricing", "Core WTA commercial model")]
+tbl = s.shapes.add_table(len(rows), 3, Inches(0.52), Inches(TOP - 0.25), Inches(12.29), Inches(3.9)).table
+tbl.columns[0].width = Inches(2.9)
+tbl.columns[1].width = Inches(6.69)
+tbl.columns[2].width = Inches(2.7)
+for ri, row_ in enumerate(rows):
+    tbl.rows[ri].height = Inches(0.55)
+    for ci, val in enumerate(row_):
+        c = tbl.cell(ri, ci)
+        c.fill.solid()
+        c.fill.fore_color.rgb = NAVY if ri == 0 else (GREY if ri % 2 else WHITE)
+        c.margin_left = c.margin_right = Inches(0.15)
+        c.vertical_anchor = MSO_ANCHOR.MIDDLE
+        tf = c.text_frame
+        tf.text = ""
+        r = tf.paragraphs[0].add_run()
+        r.text = val
+        _style_run(r, 13 if ri else 13, WHITE if ri == 0 else (NAVY if ci != 1 else TEXT),
+                   SEMI if (ri == 0 or ci == 0) else BODY)
 
 # Sections for easy navigation in PowerPoint ---------------------------------------
-SECTIONS = [("The Provocation", 0), ("Part 1 – Agency Economics 101", 3), ("Part 2 – WTA in Action", 8),
-            ("Part 3 – The Commercial Operating System", 13), ("The Wrap & Q&A", 21)]
+SECTIONS = [("Part 1 – Finance 101", 0), ("Part 2 – WTA in Action", 7), ("Part 3 – Commercial Model Intro", 12),
+            ("Wrap-up & Q&A", 19), ("Appendix", 21)]
+
 P14 = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 ids = [sid.get("id") for sid in prs.slides._sldIdLst]
 pres_el = prs.part._element
@@ -930,7 +834,7 @@ for k, (name, start) in enumerate(SECTIONS):
     for sid in ids[start:bounds[k + 1]]:
         etree.SubElement(lst, f"{{{P14}}}sldId", id=sid)
 
-prs.core_properties.title = "Stop Selling Hours: The WTA Commercial Operating System"
+prs.core_properties.title = "Mastering Agency Commercials"
 prs.core_properties.author = "Erin Jemas, Price It Right"
 prs.core_properties.subject = "Maple Ranch account leadership session"
 prs.save(str(OUT))
