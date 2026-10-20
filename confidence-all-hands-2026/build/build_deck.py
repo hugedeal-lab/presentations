@@ -1,4 +1,4 @@
-"""Build the Confidence 2026 Year-End All Hands content outline on the VML 2026 template.
+"""Build the Confidence 2026 Year-End All Hands overview on the VML 2026 template.
 
 Usage: python3 build_deck.py [output.pptx]
 
@@ -21,7 +21,7 @@ from pptx.util import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parent / "template" / "VML-Template-Feb-2026.pptx"
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parent / "Confidence-2026-All-Hands-Content-Outline.pptx"
+OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parent / "Confidence-2026-All-Hands-Overview.pptx"
 
 # --- VML palette (template "VML" scheme + brand grayscale + one secondary hue: Gold) ----
 BLACK = RGBColor(0x19, 0x19, 0x19)
@@ -243,229 +243,153 @@ def numeral(slide, x, y, n, color=BLACK, size=40):
 
 
 
+
+
 # =======================================================================================
-# 1 — THE IDEA AND INTENTIONS
+# 1 — OVERVIEW
 # =======================================================================================
-s = content("What Kylie has in mind for our year-end All Hands", """
-For our final Confidence All Hands of 2026, Kylie would like a slightly different approach from the traditional year-end celebration: a 2026 Impact Report and a 2027 Future Outlook.
+s = content("Year-End All Hands  |  Overview for feedback", """
+Our final Confidence All Hands of 2026 takes a slightly different shape this year: a 2026 Impact Report and a 2027 Future Outlook, rather than a traditional year-end celebration.
 
-The intentions behind it:
-• There's plenty worth recognizing, but an overly celebratory tone could feel disconnected from the challenges, uncertainty and demands people experienced this year. Lead with the tangible contributions Confidence made.
-• Make room for the reality of people's experiences while still creating something productive and forward-looking.
-• Use VML Intelligence's Future 100 as inspiration to think beyond incremental process improvements and imagine how we might reinvent the practice.
+Why: there's a lot worth recognizing, but this has been a demanding year. The meeting should show what we accomplished, appreciate the people behind it, and look ahead with some curiosity, without feeling overly celebratory.
 
-Format: about 60 minutes, with roughly 10 minutes kept for Confidence leadership updates. Timing preference is shortly after November reporting and before Thanksgiving.
+It's built around three parts: Our Impact, Our People and Our Future. Confidence leadership updates keep a dedicated slot.
 
-Planning details will live on a separate page; this deck is only the content outline and intent.
+We're sharing this to get your reactions before planning goes further.
 """, dark=True)
 text(s, L, TOP, W, 0.8, "Confidence 2026: Our Impact, Our Future", size=44, color=WHITE, font=HEAD)
-text(s, L, TOP + 0.9, W, 0.5, [{"t": [
-    {"t": "Recognize our impact.  Appreciate our people.  ", "color": LGRAY},
-    {"t": "Imagine our future.", "color": GOLD},
-]}], size=22)
-intents = [
-    ("An impact report, not a party",
-     "There's plenty to recognize, but an overly celebratory tone could feel out of step with the year. "
-     "Lead with what Confidence actually contributed."),
-    ("Honest about the year",
-     "Make room for the reality of people's experiences, while still creating something productive and "
-     "forward-looking."),
-    ("Imagine, don't just improve",
-     "Use VML's Future 100 to think beyond incremental process changes and imagine how we might reinvent "
-     "the practice."),
+text(s, L, TOP + 0.95, 11.0, 0.9, "Our year-end All Hands, shaped as a 2026 Impact Report and a 2027 Future Outlook "
+     "rather than a traditional celebration.", size=20, color=LGRAY, line=1.1)
+pillars = [
+    ("Our Impact", "What Confidence delivered for our clients and our practice this year"),
+    ("Our People", "The individuals and teams behind that work"),
+    ("Our Future", "What our practice could look like in 2027 and beyond"),
 ]
 cw = (W - 2 * 0.4) / 3
-for i, (h, d) in enumerate(intents):
+for i, (h, d) in enumerate(pillars):
     x = L + i * (cw + 0.4)
-    rule(s, x, 3.75, x + cw, 3.75, color=MGRAY)
-    text(s, x, 3.95, 0.8, 0.5, f"{i + 1:02d}", size=16, color=GOLD, font=HEAD)
-    text(s, x, 4.4, cw - 0.1, 0.5, h, size=20, color=WHITE, font=HEAD)
-    text(s, x, 4.95, cw - 0.1, 1.3, d, size=14, color=LGRAY, line=1.15)
+    rule(s, x, 4.0, x + cw, 4.0, color=MGRAY)
+    text(s, x, 4.2, 0.8, 0.5, f"{i + 1:02d}", size=16, color=GOLD, font=HEAD)
+    text(s, x, 4.65, cw - 0.1, 0.5, h, size=24, color=WHITE, font=HEAD)
+    text(s, x, 5.25, cw - 0.1, 0.9, d, size=15, color=LGRAY, line=1.15)
 text(s, L, 6.55, W, 0.4, [{"t": [
-    {"t": "Format:  ", "font": HEAD, "color": WHITE},
-    {"t": "about 60 minutes, including ~10 minutes of Confidence leadership updates. "
-          "Late November, shortly after November reporting.", "color": LGRAY},
+    {"t": "60 minutes  ·  late November, after November reporting  ·  ", "color": LGRAY},
+    {"t": "includes Confidence leadership updates", "color": LGRAY},
 ]}], size=14)
 
 # =======================================================================================
-# 2 — THE OUTLINE
+# 2 — FORMAT
 # =======================================================================================
-s = content("The outline: what we did, who made it happen, and what could come next", """
-A proposed flow for the hour. Timing is a starting point and can flex once leadership and presenter needs are known.
+s = content("Format: a proposed 60-minute flow", """
+A proposed run of show. Timing is a starting point.
 
-The arc matters more than the minutes: open honestly, give leadership a dedicated slot, show our collective impact, recognize the people behind it, then turn toward the future with a few provocations and a live conversation.
+The flow moves from what we did, to who made it happen, to what could come next. Leadership updates keep a dedicated 10 minutes.
 
-The bridge between the two halves: 2026 was a year of evolving from individual project successes toward reusable capabilities. If our work, capabilities and roles have already evolved this much, what could Confidence look like in 2027?
-
-Suggestion: protect the popcorn conversation if other segments ask for more time. It's the part most likely to make this year's All Hands feel different and give new voices a chance to contribute.
+The popcorn conversation is the most different part of the format: a short, live discussion where a few people from across Confidence build on each other's ideas about the future.
 """)
 segs = [
-    (5, "Welcome and opening", "Acknowledge the year; explain why this meeting looks different", "frame"),
+    (5, "Welcome", "Acknowledge the year and set the tone", "frame"),
     (10, "Leadership updates", "Two or three concise updates on the business, clients and practice", "frame"),
-    (15, "Our Impact: 2026 in review", "A credible picture of the breadth, scale and value of our work", "core"),
-    (8, "Our People: behind the impact", "Genuine recognition tied to real contributions", "core"),
-    (5, "Looking ahead: the Confidence Future 3", "Three Future 100-inspired provocations", "core"),
-    (12, "Popcorn conversation", "A live “yes, and” discussion about what Confidence could become", "key"),
-    (5, "Closing", "Appreciation, a few takeaways, and how ideas will be captured", "frame"),
+    (15, "Our Impact", "Highlights of what Confidence delivered in 2026", "core"),
+    (8, "Our People", "Short spotlights on individuals and teams", "core"),
+    (5, "Our Future", "Three provocations about where our work is heading", "core"),
+    (12, "Popcorn conversation", "A live, “yes, and” discussion that builds on those ideas", "key"),
+    (5, "Close", "Appreciation and a few takeaways", "frame"),
 ]
 fills = {"frame": (LGRAY, BLACK), "core": (BLACK, WHITE), "key": (GOLD, BLACK)}
 unit = W / 60
 x = L
 bar_y, bar_h = TOP + 0.05, 0.55
-for mins, name, intent, kind in segs:
+for mins, name, desc, kind in segs:
     f, c = fills[kind]
     seg = box(s, x, bar_y, mins * unit - 0.04, bar_h, fill=f)
     label_in(seg, f"{mins} min", size=12, color=c)
     x += mins * unit
-ty = 3.05
-rows_h = 0.56
-text(s, L + 0.45, ty - 0.4, 1.3, 0.3, "Time", size=11, color=MGRAY, font=HEAD)
-text(s, L + 1.8, ty - 0.4, 4.0, 0.3, "Segment", size=11, color=MGRAY, font=HEAD)
-text(s, L + 6.3, ty - 0.4, 6.0, 0.3, "Intention", size=11, color=MGRAY, font=HEAD)
+ty, rows_h = 3.0, 0.57
 t0 = 0
-for i, (mins, name, intent, kind) in enumerate(segs):
+for i, (mins, name, desc, kind) in enumerate(segs):
     y = ty + i * rows_h
     f, _ = fills[kind]
-    box(s, L, y + 0.17, 0.2, 0.2, fill=f, line=BLACK if kind == "frame" else None)
-    text(s, L + 0.45, y + 0.12, 1.3, 0.35, f"{t0:02d}–{t0 + mins:02d}", size=14, color=MGRAY)
-    text(s, L + 1.8, y + 0.12, 4.4, 0.35, name, size=14, font=HEAD)
-    text(s, L + 6.3, y + 0.12, W - 6.3, 0.35, intent, size=14)
+    box(s, L, y + 0.18, 0.2, 0.2, fill=f, line=BLACK if kind == "frame" else None)
+    text(s, L + 0.45, y + 0.13, 1.3, 0.35, f"{t0:02d}–{t0 + mins:02d}", size=14, color=MGRAY)
+    text(s, L + 1.8, y + 0.13, 3.6, 0.35, name, size=15, font=HEAD)
+    text(s, L + 5.5, y + 0.13, W - 5.5, 0.35, desc, size=15)
     rule(s, L, y + rows_h, R, y + rows_h)
     t0 += mins
 
 # =======================================================================================
-# 3 — OUR IMPACT
+# 3 — CONTENT
 # =======================================================================================
-s = content("Our Impact: show the breadth, scale and value of what Confidence delivered", """
-Intention: give the team a credible picture of the scale, diversity and importance of Confidence's contributions, using a few compelling metrics, short client stories and visual highlights. It should feel like one practice story, not a status update or a stack of team reports.
+s = content("Content: what each part could include", """
+A quick look at what each part could include. These are examples and thought starters, not final selections.
 
-Thought starter: organize by the themes that came through in this year's Technology Reports rather than by client or reporting group.
+Our Impact: a few strong metrics and short client stories, organized by theme rather than by client, so it reads as one practice story rather than a status update. Possible featured stories from this year's Technology Reports include United Rentals (AI-enabled delivery and automation), Sherwin-Williams (shared delivery standards across the T4 product teams) and Mazda (program-level quality governance). A visual summary can show the breadth of work across other accounts.
 
-Example stories (figures from the 2026 Technology Reports; validate before use):
-• United Rentals: from experimenting with AI to the foundations of an AI-enabled delivery lifecycle. 90%+ automation coverage for Cart regression, 320+ automated tests for AU/NZ readiness, visual regression across 257 scenarios and 8 devices, Churchill AI-DLC expanding to more teams.
-• Sherwin-Williams: Confidence standards became the operating model for the T4 transformation. Shared Agile, Jira and requirements standards across six T4 product teams; three releases in six weeks; AI-assisted requirements generating executable Playwright tests. (Reports cite five pods, six teams and seven workstreams at different points; reconcile before choosing a headline.)
-• Mazda: clarity and confidence across an interconnected program. 30 Vehicle Landing Pages migrated, program-level AQ governance, the Open Intelligence Hub and Sidekick Agents. (Confirm the Oct 20 and 27 milestones before presenting them as complete.)
+Our People: short spotlights connected to real contributions, such as innovation, leadership through tough delivery, collaboration, mentorship and knowledge sharing. Nominations would come from group and pod leads. Not a competitive awards format.
 
-Show breadth beyond the largest accounts too. A visual summary or rotating collage can cover many highlights quickly.
+Our Future: three "what if" provocations inspired by VML Intelligence's Future 100: 2026, each tied to something we did this year. Then a 12-minute popcorn conversation: four or five people from different disciplines and pods react to a scenario and build on each other's ideas, with the audience joining in chat.
 """)
-text(s, L, TOP, 5.3, 0.35, "Intention", size=16, font=HEAD)
-text(s, L, TOP + 0.45, 5.3, 1.1, "A credible picture of our collective impact: a few strong metrics, short client stories and "
-     "visual highlights that read as one practice story, not a status update.", size=14, line=1.1)
-text(s, L, 3.75, 5.3, 0.35, "Thought starter: organize by theme, not by client", size=16, font=HEAD)
-imp = ["Delivering real outcomes", "Reinventing delivery", "Building confidence at scale",
-       "Establishing repeatable practices", "Growing as strategic partners"]
-for i, h in enumerate(imp):
-    y = 4.25 + i * 0.52
-    text(s, L, y + 0.08, 0.55, 0.35, f"{i + 1:02d}", size=14, color=DGOLD, font=HEAD)
-    text(s, L + 0.55, y + 0.08, 4.7, 0.35, h, size=14)
-    rule(s, L, y + 0.5, L + 5.3, y + 0.5)
-x2 = 6.05
-text(s, x2, TOP, R - x2, 0.35, "Example stories", size=16, font=HEAD)
-stories = [
-    ("90%+", "United Rentals", "From AI experimentation to an AI-enabled delivery lifecycle"),
-    ("6", "Sherwin-Williams", "Confidence standards became the operating model across T4 product teams"),
-    ("30", "Mazda", "Vehicle Landing Pages migrated, with program-level AQ governance"),
+parts = [
+    ("Our Impact", "15 min", "A few strong metrics and short client stories that read as one practice story.", [
+        "Featured stories, e.g. United Rentals, Sherwin-Williams, Mazda",
+        "Organized by theme: AI in delivery, quality at scale, shared practices",
+        "A visual summary of highlights across other accounts",
+    ]),
+    ("Our People", "8 min", "Recognition connected to real contributions, not an awards show.", [
+        "Short spotlights on individuals and teams",
+        "Innovation, leadership, collaboration, mentorship",
+        "Nominations from group and pod leads",
+    ]),
+    ("Our Future", "17 min", "Provocations inspired by VML's Future 100, then a live conversation.", [
+        "What if AI becomes a member of every delivery team?",
+        "What if trust becomes our most valuable deliverable?",
+        "Popcorn conversation: 4–5 voices across disciplines, “yes, and”",
+    ]),
 ]
-for i, (stat, client, line_) in enumerate(stories):
-    y = TOP + 0.5 + i * 1.0
-    box(s, x2, y, R - x2, 0.88, line=BLACK)
-    text(s, x2 + 0.2, y, 1.6, 0.88, stat, size=32, font=HEAD, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, x2 + 1.85, y + 0.12, R - x2 - 2.05, 0.3, client, size=14, font=HEAD)
-    text(s, x2 + 1.85, y + 0.44, R - x2 - 2.05, 0.4, line_, size=12, color=MGRAY, line=1.0)
-text(s, x2, 5.55, R - x2, 0.35, "Breadth beyond the largest accounts", size=14, font=HEAD)
-text(s, x2, 5.9, R - x2, 0.8, "Pokémon Automated Retail  ·  Tennessee Tourism  ·  Coca-Cola  ·  US Navy  ·  EchoPark  ·  "
-     "Mayo Clinic  ·  Thrivent  ·  Global Payments  ·  Boehringer Ingelheim  ·  GDMS, Conagra, Spire",
-     size=13, line=1.15)
-text(s, x2, 6.7, R - x2, 0.3, "Examples from the 2026 Technology Reports; figures to be validated.", size=11, color=MGRAY)
+cw = (W - 2 * 0.3) / 3
+ch = 7.0 - TOP
+for i, (name, mins, what, items) in enumerate(parts):
+    x = L + i * (cw + 0.3)
+    box(s, x, TOP, cw, ch, line=BLACK)
+    text(s, x + 0.25, TOP + 0.2, 1.0, 0.4, f"{i + 1:02d}", size=16, color=DGOLD if i == 2 else BLACK, font=HEAD)
+    text(s, x + cw - 1.45, TOP + 0.22, 1.2, 0.4, mins, size=14, color=MGRAY, align=PP_ALIGN.RIGHT)
+    text(s, x + 0.25, TOP + 0.7, cw - 0.5, 0.45, name, size=24, font=HEAD)
+    text(s, x + 0.25, TOP + 1.3, cw - 0.5, 0.9, what, size=15, line=1.1)
+    rule(s, x + 0.25, TOP + 2.4, x + cw - 0.25, TOP + 2.4)
+    text(s, x + 0.25, TOP + 2.55, cw - 0.5, 0.3, "EXAMPLES", size=10, color=MGRAY, font=HEAD)
+    text(s, x + 0.25, TOP + 2.9, cw - 0.5, 2.1, [{"t": it, "check": True} for it in items],
+         size=14, after=8, line=1.05)
 
 # =======================================================================================
-# 4 — OUR PEOPLE
+# 4 — FEEDBACK
 # =======================================================================================
-s = content("Our People: genuine recognition, tied to real contributions", """
-Intention: keep the shout-outs that are traditionally part of the year-end All Hands, but connect them more directly to meaningful contributions. Reinforce that the year's impact came from people collaborating, adapting and investing in one another.
+s = content("We'd like your reactions", """
+Open it up. The goal is honest reactions, not sign-off.
 
-Thought starters:
-• Recognize more than output: innovation and problem-solving, leadership through difficult delivery, collaboration, mentorship and knowledge sharing, improving our craft, and helping clients and colleagues succeed.
-• Ask each group or pod lead for nominations with a short note: what they did, why it mattered, who benefited.
-• Avoid a competitive awards format. A series of short spotlights will feel more authentic.
-• Look past the reports so less visible contributors aren't missed.
-
-The examples on the right come from the Technology Reports. They are starting points, not nominations.
-""")
-text(s, L, TOP, 4.6, 0.35, "Intention", size=16, font=HEAD)
-text(s, L, TOP + 0.45, 4.6, 1.1, "Keep the shout-outs, but make them meaningful. The year's impact came from people "
-     "collaborating, adapting and investing in one another.", size=14, line=1.1)
-text(s, L, 3.75, 4.6, 0.35, "Thought starters", size=16, font=HEAD)
-text(s, L, 4.2, 4.6, 2.8, [
-    {"t": "Recognize growth, collaboration and resilience, not just output", "check": True},
-    {"t": "Ask leads: what did they do, why did it matter, who benefited?", "check": True},
-    {"t": "Short spotlights, not a competitive awards program", "check": True},
-    {"t": "Look beyond the reports for less visible contributors", "check": True},
-], size=14, after=8, line=1.05)
-x2 = 5.3
-text(s, x2, TOP, R - x2, 0.35, "Example spotlights from the Technology Reports", size=16, font=HEAD)
-table(s, x2, TOP + 0.45, R - x2, [2.5, R - x2 - 2.5], [
-    ("Theme", "Example"),
-    ("AI-enabled delivery", "Kunal Pacheriwala: expanding the Churchill AI development platform"),
-    ("Quality innovation", "Jacob Barrett: visual regression architecture; United Rentals automation team"),
-    ("Program coordination", "Pan Leung: Navy workstream visibility and prioritization"),
-    ("Complex delivery leadership", "Melissa Jones: Mazda cross-squad coordination and risk mitigation"),
-    ("Practice standardization", "Sherwin-Williams T4 analyst team, incl. Abbey Logan on dependency management"),
-    ("Knowledge sharing", "Spencer Brown: AI agent workshop and follow-up coaching"),
-    ("Quality leadership", "Vanessa Lacy: Mazda program-level AQ; Kristy Riley: process modernization"),
-    ("Community engagement", "Jessica Ward, Sharee Thompson and volunteers: KC Tech Council LEGiT program"),
-], row_h=0.47, size=12)
-text(s, x2, 6.75, R - x2, 0.3, "Starting points identified through reporting, not nominations.", size=11, color=MGRAY)
-
-# =======================================================================================
-# 5 — OUR FUTURE
-# =======================================================================================
-s = content("Our Future: a few provocations, then a live conversation about what we could become", """
-Intention: encourage people to consider possibilities beyond familiar improvements and current priorities. This isn't a recap of the Future 100 or a 2027 strategy; it's an invitation to imagine.
-
-The Confidence Future 3 (5 min): three original predictions inspired by VML Intelligence's Future 100: 2026, each connected to something we actually did in 2026.
-1. AI as a delivery team member. Inspiration: Synthetic Generation, Democratizing creAItivity. 2026 connection: Churchill AI-DLC, AI-assisted requirements, Agent Ops.
-2. Trust as our deliverable. Inspiration: Truth Literacy, Omnisurveillance, Coded Empathy. 2026 connection: continuous quality engineering and AQ governance.
-3. Beyond the website. Inspiration: The Reality Interface, Acommerce, Digital Intent. 2026 connection: conversational AI and agent-enabled experiences.
-A possible editorial format: a bold prediction, a short trend explanation, one example, a connection to our 2026 work, and one provocative question.
-
-Popcorn conversation (12 min): an informal discussion where four or five people from different disciplines and pods react to a scenario and build on each other's ideas. "Yes, and," not evaluation; no consensus or business case required; the audience can join through chat. Kylie also floated involving two or three pods or small groups. Breakouts would allow broader participation but need more time.
-
-Alternative theme: what if we reinvented Confidence from scratch? What would we keep, drop, reinvent or introduce?
+Prompts if the conversation needs a nudge:
+• Does an impact-and-future format feel right for the year we've had?
+• Is the time balanced well across updates, impact, recognition and discussion?
+• Are there stories, accomplishments or people we should make sure to include?
+• Does a live popcorn conversation sound engaging, or would something else work better? Who would be great in it?
 """, dark=True)
-fut = [
-    ("What if AI becomes a member of every delivery team?",
-     "What would we give an AI teammate, and what would we never delegate?"),
-    ("What if trust becomes our most valuable deliverable?",
-     "What if clients hired us primarily to establish trust in their technology?"),
-    ("What if the website is no longer the destination?",
-     "How do we define and validate experiences with no predictable journey?"),
+qs = [
+    ("The format", "Does an impact-and-future All Hands feel right for the year we've had?"),
+    ("The balance", "Is time spread well across updates, impact, recognition and discussion?"),
+    ("The content", "Which stories, accomplishments or people should we be sure to include?"),
+    ("The conversation", "Would a live popcorn conversation land with the team? Who would be great in it?"),
 ]
-text(s, L, TOP, W, 0.35, "The Confidence Future 3  ·  inspired by VML Intelligence, The Future 100: 2026",
-     size=14, color=GRAY, font=HEAD)
-cw = (W - 2 * 0.4) / 3
-for i, (pred, q) in enumerate(fut):
-    x = L + i * (cw + 0.4)
-    text(s, x, TOP + 0.5, 0.8, 0.5, f"{i + 1:02d}", size=28, color=GOLD, font=HEAD)
-    text(s, x, TOP + 1.1, cw - 0.1, 0.95, pred, size=19, color=WHITE, font=HEAD, line=1.05)
-    text(s, x, TOP + 2.05, cw - 0.1, 0.7, [{"t": f"“{q}”", "italic": True}], size=13, color=LGOLD, line=1.1)
-rule(s, L, 4.95, R, 4.95, color=MGRAY)
-text(s, L, 5.15, 6.0, 0.35, "Then: a popcorn conversation", size=16, color=WHITE, font=HEAD)
-text(s, L, 5.6, 6.0, 1.4, [
-    {"t": "4–5 voices from different disciplines and pods build on one scenario", "check": True},
-    {"t": "“Yes, and”: exploratory, not evaluative; the audience joins via chat", "check": True},
-    {"t": "Kylie also floated two or three pods or small groups", "check": True},
-], size=13, color=LGRAY, after=6, line=1.05)
-x2 = 6.85
-text(s, x2, 5.15, R - x2, 0.35, "Prompts to spark it", size=16, color=WHITE, font=HEAD)
-text(s, x2, 5.6, R - x2, 1.4, [
-    {"t": "If we were building Confidence from scratch today, what would we do differently?", "check": True},
-    {"t": "Where could Technology Analysis, Scrum and Quality Engineering converge?", "check": True},
-    {"t": "What would we pursue without today's roles, tools or processes?", "check": True},
-], size=13, color=LGRAY, after=6, line=1.05)
+cw, rh = (W - 0.5) / 2, 2.2
+for i, (h, q) in enumerate(qs):
+    col, row = i % 2, i // 2
+    x = L + col * (cw + 0.5)
+    y = TOP + 0.1 + row * rh
+    text(s, x, y, 0.9, 0.6, f"{i + 1:02d}", size=28, color=GOLD, font=HEAD)
+    text(s, x + 1.0, y + 0.05, cw - 1.0, 0.45, h, size=22, color=WHITE, font=HEAD)
+    text(s, x + 1.0, y + 0.6, cw - 1.0, 0.9, q, size=16, color=LGRAY, line=1.15)
+    rule(s, x, y + rh - 0.3, x + cw, y + rh - 0.3, color=MGRAY)
 
 prs.core_properties.title = "Confidence 2026: Our Impact, Our Future"
-prs.core_properties.subject = "Year-End All Hands content outline"
+prs.core_properties.subject = "Year-End All Hands overview for feedback"
 prs.core_properties.author = "Zack Jemas"
 prs.save(str(OUT))
 print(f"Saved {OUT}  ({len(prs.slides._sldIdLst)} slides)")
