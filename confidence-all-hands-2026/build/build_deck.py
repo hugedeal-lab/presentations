@@ -251,7 +251,7 @@ def numeral(slide, x, y, n, color=BLACK, size=40):
 s = content("Year-End All Hands  |  Overview for feedback", """
 Our final Confidence All Hands of 2026 takes a slightly different shape this year: a 2026 Impact Report and a 2027 Future Outlook, rather than a traditional year-end celebration.
 
-Why: there's a lot worth recognizing, but this has been a demanding year. The meeting should show what we accomplished, appreciate the people behind it, and look ahead with some curiosity, without feeling overly celebratory.
+Why: there's a lot worth recognizing, but this has been a demanding year. The meeting should make room for that honestly, show what we accomplished, appreciate the people behind it, and imagine how we might reinvent the practice, without feeling overly celebratory.
 
 It's built around three parts: Our Impact, Our People and Our Future. Confidence leadership updates keep a dedicated slot.
 
@@ -263,7 +263,7 @@ text(s, L, TOP + 0.95, 11.0, 0.9, "Our year-end All Hands, shaped as a 2026 Impa
 pillars = [
     ("Our Impact", "What Confidence delivered for our clients and our practice this year"),
     ("Our People", "The individuals and teams behind that work"),
-    ("Our Future", "What our practice could look like in 2027 and beyond"),
+    ("Our Future", "Imagine how we might reinvent our practice, not just improve it"),
 ]
 cw = (W - 2 * 0.4) / 3
 for i, (h, d) in enumerate(pillars):
@@ -288,7 +288,7 @@ The flow moves from what we did, to who made it happen, to what could come next.
 The popcorn conversation is the most different part of the format: a short, live discussion where a few people from across Confidence build on each other's ideas about the future.
 """)
 segs = [
-    (5, "Welcome", "Acknowledge the year and set the tone", "frame"),
+    (5, "Welcome", "Acknowledge the year honestly, including its challenges", "frame"),
     (10, "Leadership updates", "Two or three concise updates on the business, clients and practice", "frame"),
     (15, "Our Impact", "Highlights of what Confidence delivered in 2026", "core"),
     (8, "Our People", "Short spotlights on individuals and teams", "core"),
@@ -323,17 +323,17 @@ for i, (mins, name, desc, kind) in enumerate(segs):
 s = content("Content: what each part could include", """
 A quick look at what each part could include. These are examples and thought starters, not final selections.
 
-Our Impact: a few strong metrics and short client stories, organized by theme rather than by client, so it reads as one practice story rather than a status update. Possible featured stories from this year's Technology Reports include United Rentals (AI-enabled delivery and automation), Sherwin-Williams (shared delivery standards across the T4 product teams) and Mazda (program-level quality governance). A visual summary can show the breadth of work across other accounts.
+Our Impact: show the breadth of what Confidence contributed across clients, releases, deliverables, capabilities and outcomes, organized by theme rather than by client so it reads as one practice story rather than a status update. A visual summary can carry most of the breadth, with a few featured stories. Possible featured stories from this year's Technology Reports include United Rentals (AI-enabled delivery and automation), Sherwin-Williams (shared delivery standards across the T4 product teams) and Mazda (program-level quality governance).
 
 Our People: short spotlights connected to real contributions, such as innovation, leadership through tough delivery, collaboration, mentorship and knowledge sharing. Nominations would come from group and pod leads. Not a competitive awards format.
 
-Our Future: three "what if" provocations inspired by VML Intelligence's Future 100: 2026, each tied to something we did this year. Then a 12-minute popcorn conversation: four or five people from different disciplines and pods react to a scenario and build on each other's ideas, with the audience joining in chat.
+Our Future: three "what if" provocations inspired by VML Intelligence's Future 100: 2026, each tied to something we did this year. Then a 12-minute popcorn conversation where people react to a scenario and build on each other's ideas. It could be a few individual voices from different disciplines, or two or three pods or small groups working through a scenario while everyone else watches and joins in chat. The aim is to think beyond incremental improvements and imagine how we might reinvent the practice.
 """)
 parts = [
-    ("Our Impact", "15 min", "A few strong metrics and short client stories that read as one practice story.", [
-        "Featured stories, e.g. United Rentals, Sherwin-Williams, Mazda",
+    ("Our Impact", "15 min", "The breadth of our work: clients, releases, capabilities and outcomes.", [
+        "A visual summary of highlights across the practice",
+        "A few featured stories, e.g. United Rentals, Sherwin-Williams, Mazda",
         "Organized by theme: AI in delivery, quality at scale, shared practices",
-        "A visual summary of highlights across other accounts",
     ]),
     ("Our People", "8 min", "Recognition connected to real contributions, not an awards show.", [
         "Short spotlights on individuals and teams",
@@ -343,7 +343,7 @@ parts = [
     ("Our Future", "17 min", "Provocations inspired by VML's Future 100, then a live conversation.", [
         "What if AI becomes a member of every delivery team?",
         "What if trust becomes our most valuable deliverable?",
-        "Popcorn conversation: 4–5 voices across disciplines, “yes, and”",
+        "Popcorn conversation: a few voices, or two or three pods or small groups",
     ]),
 ]
 cw = (W - 2 * 0.3) / 3
@@ -370,13 +370,13 @@ Prompts if the conversation needs a nudge:
 • Does an impact-and-future format feel right for the year we've had?
 • Is the time balanced well across updates, impact, recognition and discussion?
 • Are there stories, accomplishments or people we should make sure to include?
-• Does a live popcorn conversation sound engaging, or would something else work better? Who would be great in it?
+• For the popcorn conversation, would a few individual voices or two or three pods or small groups work better? Who would be great in it?
 """, dark=True)
 qs = [
     ("The format", "Does an impact-and-future All Hands feel right for the year we've had?"),
     ("The balance", "Is time spread well across updates, impact, recognition and discussion?"),
     ("The content", "Which stories, accomplishments or people should we be sure to include?"),
-    ("The conversation", "Would a live popcorn conversation land with the team? Who would be great in it?"),
+    ("The conversation", "A few voices, or two or three pods or small groups? Who would be great in it?"),
 ]
 cw, rh = (W - 0.5) / 2, 2.2
 for i, (h, q) in enumerate(qs):
